@@ -1,0 +1,65 @@
+{
+    "best_trajectory_id": 540,
+    "evaluation": [
+        {
+            "trajectory_id": 129,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 3.0,
+                "efficiency": 1.0,
+                "reasons": "Unnecessary lateral deviation within the lane, reducing comfort and stability."
+            },
+            "total_cost": 2.0
+        },
+        {
+            "trajectory_id": 540,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 1.0,
+                "reasons": "Optimal path. Maintains lane center perfectly, providing a safe, comfortable, and efficient trajectory."
+            },
+            "total_cost": 1.0
+        },
+        {
+            "trajectory_id": 483,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 4.0,
+                "efficiency": 3.0,
+                "reasons": "Unsafe lane violation. Crosses into the opposing traffic lane, which is a critical safety failure."
+            },
+            "total_cost": 4.25
+        },
+        {
+            "trajectory_id": 128,
+            "cost_breakdown": {
+                "safety": 3.0,
+                "comfort": 3.0,
+                "efficiency": 2.0,
+                "reasons": "Significant lateral deviation within the lane, getting too close to the lane boundary. Uncomfortable and less safe."
+            },
+            "total_cost": 2.75
+        },
+        {
+            "trajectory_id": 492,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 4.0,
+                "efficiency": 5.0,
+                "reasons": "Abrupt, aborted maneuver with very low progress towards the goal. Unsafe, uncomfortable, and highly inefficient."
+            },
+            "total_cost": 4.25
+        },
+        {
+            "trajectory_id": 183,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 4.0,
+                "efficiency": 3.0,
+                "reasons": "Unsafe lane violation. Crosses into the opposing traffic lane, representing a severe safety risk."
+            },
+            "total_cost": 4.25
+        }
+    ]
+}

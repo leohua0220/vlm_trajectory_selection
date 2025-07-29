@@ -1,0 +1,37 @@
+[
+    {
+        "timestamp": "2025-06-30T12:34:14.182165",
+        "image_path": "/home/hua/Desktop/gemini_api/ZAM_Tjunction-1_42_T-1_0.png",
+        "prompt": "As an expert in autonomous driving, analyze this bird's-eye view (BEV) image of a path planning scenario. Describe the ego vehicle's planned trajectory, the detected lane markings (distinguishing between solid and dashed lines), and any other objects like obstacles or other vehicles.",
+        "response_summary": "As an expert in autonomous driving, I'll analyze this Bird's-Eye View (BEV) image of a path planning scenario.\n\n**Overall Scenario:**\nThe image depicts an autonomous vehicle (ego vehicle) approaching ...",
+        "response_full_text_file": "responses/ZAM_Tjunction-1_42_T-1_0_20250630_123414_response.txt"
+    },
+    {
+        "timestamp": "2025-07-03T10:09:25.685889",
+        "image_path": "/home/hua/Desktop/gemini_api/plots/ZAM_Tjunction-1_42_T-1_32.png",
+        "prompt": "As an expert in autonomous driving, analyze this bird's-eye view (BEV) image of a path planning scenario. Describe the ego vehicle's planned trajectory, the detected lane markings (distinguishing between solid and dashed lines), and any other objects like obstacles or other vehicles.",
+        "response_summary": "As an expert in autonomous driving, I've analyzed the provided Bird's-Eye View (BEV) image, which effectively illustrates a complex path planning scenario at an intersection or multi-lane junction.\n\nH...",
+        "response_full_text_file": "responses/ZAM_Tjunction-1_42_T-1_32_20250703_100925_response.txt"
+    },
+    {
+        "timestamp": "2025-07-03T17:04:46.291080",
+        "image_path": "/home/hua/Desktop/gemini_api/plots/USA_Peach-1_1_T-1_11.png",
+        "prompt": "As an expert in autonomous driving perception and planning, analyze the following Bird's-Eye View (BEV) image of a path planning scenario. Provide a detailed description of:1.  The **ego vehicle's planned trajectory** (ego vehicle is labeled as '1500'). Assess its likely intent and smoothness.2.  All **detected lane markings**, clearly distinguishing between solid and dashed lines, and discussing their implications for vehicle movement.3.  Any **other objects or traffic participants** (e.g., obstacles, other vehicles, pedestrians), including their type and approximate position relative to the ego vehicle.4.  The **goal area** (marked as the yellow region), and its relationship to the ego vehicle's planned path.the detected lane markings (distinguishing between solid and dashed lines), and any other objects like obstacles or other vehicles.",
+        "response_summary": "As an expert in autonomous driving perception and planning, I will analyze the provided Bird's-Eye View (BEV) image, detailing the critical elements of the scenario.\n\nThe image presents a typical urba...",
+        "response_full_text_file": "responses/USA_Peach-1_1_T-1_11_20250703_170446_response.txt"
+    },
+    {
+        "timestamp": "2025-07-03T17:13:29.971420",
+        "image_path": "/home/hua/Desktop/gemini_api/plots/USA_Peach-1_1_T-1_11.png",
+        "prompt": "As an expert in autonomous driving perception and planning, analyze the following Bird's-Eye View (BEV) image of a path planning scenario. The green arrow is driving direction. Provide a detailed description of:1.  predict the **ego vehicle's future trajectory** (ego vehicle is labeled as '1500').2.  Any **other objects or traffic participants** (e.g., obstacles, other vehicles, pedestrians), including their type and approximate position relative to the ego vehicle.3.  The **goal area** (marked as the yellow region), and its relationship to the ego vehicle's planned path.the detected lane markings (distinguishing between solid and dashed lines), and any other objects like obstacles or other vehicles.",
+        "response_summary": "As an expert in autonomous driving perception and planning, I will analyze this Bird's-Eye View (BEV) image in detail. The image provides a top-down perspective of a road segment, focusing on an inter...",
+        "response_full_text_file": "responses/USA_Peach-1_1_T-1_11_20250703_171329_response.txt"
+    },
+    {
+        "timestamp": "2025-07-03T17:23:06.380184",
+        "image_path": "/home/hua/Desktop/gemini_api/plots/USA_Peach-1_1_T-1_11.png",
+        "prompt": "As an expert in autonomous driving perception and planning, analyze the following Bird's-Eye View (BEV) image of a path planning scenario. The green arrow indicates the ego vehicle's current driving direction. Provide a detailed description of:1.  **Predict the ego vehicle's (labeled as '1500') probable future trajectory** for the next [Specify Time Horizon, e.g., 3-5 seconds]. Based on the scene, describe its likely path, considering potential maneuvers and interactions.2.  Any **other objects or traffic participants** (e.g., obstacles, other vehicles, pedestrians) in the scene, including their type, approximate position, and *potential movement patterns* relative to the ego vehicle.3.  The **goal area** (marked as the yellow region), and how it influences the predicted ego vehicle's future trajectory and overall planning objective.",
+        "response_summary": "As an expert in autonomous driving perception and planning, I will analyze the provided Bird's-Eye View (BEV) image.\n\n---\n\n**Scene Analysis Overview:**\n\nThe image displays a four-way intersection with...",
+        "response_full_text_file": "responses/USA_Peach-1_1_T-1_11_20250703_172306_response.txt"
+    }
+]

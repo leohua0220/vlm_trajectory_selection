@@ -1,0 +1,45 @@
+{
+    "best_trajectory_id": 171,
+    "evaluation": [
+        {
+            "trajectory_id": 171,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 1.0,
+                "efficiency": 2.0,
+                "reasons": "A safe and comfortable car-following trajectory. It correctly maintains the lane and follows the lead vehicle at a reasonable, though slightly close, distance. Progress is appropriately limited by the lead vehicle."
+            },
+            "total_cost": 1.75
+        },
+        {
+            "trajectory_id": 265,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 3.0,
+                "efficiency": 5.0,
+                "reasons": "Unsafe overtaking maneuver. Trajectory crosses into the oncoming lane, creating a high risk of a head-on collision with vehicle #3. The maneuver is infeasible and dangerous."
+            },
+            "total_cost": 4.5
+        },
+        {
+            "trajectory_id": 792,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 3.0,
+                "efficiency": 2.0,
+                "reasons": "Indecisive and uncomfortable maneuver. The trajectory exhibits unnecessary lateral movement towards the centerline, reducing comfort without any safety or efficiency benefit over simple car-following."
+            },
+            "total_cost": 2.25
+        },
+        {
+            "trajectory_id": 195,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 5.0,
+                "efficiency": 5.0,
+                "reasons": "Dangerous and erratic maneuver. Involves a sharp, uncomfortable swerve into the oncoming lane with minimal forward progress, creating an extreme collision risk and exhibiting poor vehicle control."
+            },
+            "total_cost": 5.0
+        }
+    ]
+}

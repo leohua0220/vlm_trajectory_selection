@@ -1,0 +1,69 @@
+{
+    "ego_vehicle": {
+        "id": 1500,
+        "initial_state": {
+            "position_xy": [
+                0.0,
+                0.0
+            ],
+            "velocity_mps": 13.088,
+            "acceleration_mps2": 0.0,
+            "heading_radian": -1.515
+        },
+        "historical_waypoints": []
+    },
+    "dynamic_obstacles": [
+        {
+            "id": 982,
+            "class": "vehicle",
+            "trajectory_history": [
+                {
+                    "timestamp_s": 0.0,
+                    "position_xy": [
+                        7.8299,
+                        -30.4078
+                    ],
+                    "velocity_mps": 1.0302
+                }
+            ]
+        },
+        {
+            "id": 999,
+            "class": "vehicle",
+            "trajectory_history": [
+                {
+                    "timestamp_s": 0.0,
+                    "position_xy": [
+                        2.8,
+                        -5.5
+                    ],
+                    "velocity_mps": 13.0881
+                }
+            ]
+        },
+        {
+            "id": 1026,
+            "class": "vehicle",
+            "trajectory_history": [
+                {
+                    "timestamp_s": 0.0,
+                    "position_xy": [
+                        11.6669,
+                        -10.4188
+                    ],
+                    "velocity_mps": 3.7368
+                }
+            ]
+        }
+    ],
+    "goal_region": {
+        "center_xy": [
+            1.833,
+            -32.419
+        ],
+        "length_width": [
+            4.25,
+            2.65
+        ]
+    }
+}

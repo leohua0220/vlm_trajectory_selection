@@ -1,0 +1,65 @@
+{
+    "best_trajectory_id": 129,
+    "evaluation": [
+        {
+            "trajectory_id": 129,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 3.0,
+                "reasons": "Excellent safety. The trajectory correctly yields to the left-turning vehicle by slowing down, maintaining perfect lane discipline. The motion is smooth and comfortable. Efficiency is justifiably reduced to ensure safety."
+            },
+            "total_cost": 1.5
+        },
+        {
+            "trajectory_id": 540,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 2.0,
+                "efficiency": 2.0,
+                "reasons": "Good balanced trajectory. It deviates slightly right to create space from the turning vehicle, maintaining good speed and comfort. A solid alternative to yielding."
+            },
+            "total_cost": 2.0
+        },
+        {
+            "trajectory_id": 483,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 3.0,
+                "efficiency": 1.0,
+                "reasons": "Poor safety. The trajectory deviates excessively to the right, hugging the lane line. This prioritizes efficiency over safety and comfort."
+            },
+            "total_cost": 3.0
+        },
+        {
+            "trajectory_id": 128,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 4.0,
+                "efficiency": 4.0,
+                "reasons": "Unacceptable safety. The trajectory steers left towards the oncoming turning vehicle, creating a high risk of collision. The maneuver is also uncomfortable and inefficient."
+            },
+            "total_cost": 4.5
+        },
+        {
+            "trajectory_id": 492,
+            "cost_breakdown": {
+                "safety": 3.0,
+                "comfort": 2.0,
+                "efficiency": 2.0,
+                "reasons": "Acceptable safety. The deviation to the right is more pronounced than necessary, but it remains within the lane. Comfort and efficiency are good."
+            },
+            "total_cost": 2.5
+        },
+        {
+            "trajectory_id": 183,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 3.0,
+                "efficiency": 1.0,
+                "reasons": "Poor safety. The trajectory swerves aggressively to the far right of the lane to maintain speed, compromising path adherence and comfort."
+            },
+            "total_cost": 3.0
+        }
+    ]
+}

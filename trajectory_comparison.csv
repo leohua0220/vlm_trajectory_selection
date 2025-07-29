@@ -1,0 +1,7 @@
+Trajectory ID,Algorithmic Cost,Evaluation Cost,Safety Score,Comfort Score,Efficiency Score,Reasons,Algo Cost Rank,Eval Cost Rank
+540,452.0604597659594,1.0,1.0,1.0,1.0,"Optimal path. Maintains lane center perfectly, providing a safe, comfortable, and efficient trajectory.",4,1
+129,61.06172508378999,2.0,2.0,3.0,1.0,"Unnecessary lateral deviation within the lane, reducing comfort and stability.",1,2
+128,74.34730699918578,2.75,3.0,3.0,2.0,"Significant lateral deviation within the lane, getting too close to the lane boundary. Uncomfortable and less safe.",2,3
+483,1026.3707478522279,4.25,5.0,4.0,3.0,"Unsafe lane violation. Crosses into the opposing traffic lane, which is a critical safety failure.",5,4
+492,222.1487614877167,4.25,4.0,4.0,5.0,"Abrupt, aborted maneuver with very low progress towards the goal. Unsafe, uncomfortable, and highly inefficient.",3,4
+183,1098.8983414365619,4.25,5.0,4.0,3.0,"Unsafe lane violation. Crosses into the opposing traffic lane, representing a severe safety risk.",6,4
