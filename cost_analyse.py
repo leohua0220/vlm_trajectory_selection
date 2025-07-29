@@ -4,14 +4,23 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import random # Import random for generating random colors
+import os
 
 # --- 1. Load the JSON files ---
 # Load the file containing the Frenetix Costs for each trajectory.
-with open('frenetix_cost/cost_USA_Peach-1_1_T-1_0.json', 'r') as f:
+base_scenario_name = 'USA_Peach-1_1_T-1_30'  # Base name for the scenario, can be modified as needed
+file_name_cost = f'frenetix_cost/cost_{base_scenario_name}.json'
+file_name_responses = f'logs/responses/response_{base_scenario_name}.json'
+
+# base_scenario_name = os.path.splitext(os.path.basename(file_name_responses))[0]
+output_csv_name = f'cost_comparison/cost_comparison_{base_scenario_name}.csv'
+output_png_name = f'cost_comparison/cost_comparison_{base_scenario_name}.png'
+
+with open(file_name_cost, 'r') as f:
     cost_data = json.load(f)
 
 # Load the file containing the human-like evaluation scores.
-with open('logs/responses/USA_Peach-1_1_T-1_t_0_20250728_171428.json', 'r') as f:
+with open(file_name_responses, 'r') as f:
     evaluation_data = json.load(f)
 
 # --- 2. Extract and merge the data from both files ---
@@ -53,7 +62,7 @@ df_sorted = df.sort_values('Gemini Cost Rank')
 
 # --- 5. Save the merged data to a CSV file ---
 # This allows you to inspect the combined data easily in a spreadsheet viewer.
-df_sorted.to_csv('cost_comparison/trajectory_comparison.csv', index=False)
+df_sorted.to_csv(output_csv_name, index=False)
 
 # --- 6. Visualization ---
 # Set the visual style for the plot.
@@ -84,17 +93,17 @@ for i, row in df.iterrows():
         alpha=0.8 # Add some transparency
     )
     # Add text labels next to each point for easy identification.
-    ax.text(row['Frenetix Cost'] + 15, row['Gemini Cost'], f"ID: {row['Trajectory ID']}", fontsize=9)
+    ax.text(row['Frenetix Cost'] + 1, row['Gemini Cost'], f"ID: {row['Trajectory ID']}", fontsize=9)
 
 
 # Set titles and labels for clarity.
-ax.set_title('Frenetix Cost vs. VLM Cost', fontsize=16, weight='bold')
+ax.set_title(f'Frenetix Cost vs. VLM Cost (timestamp: {base_scenario_name[-1]})', fontsize=16, weight='bold')
 ax.set_xlabel('Frenetix Cost (from Frenetix)', fontsize=12)
 ax.set_ylabel('VLM Cost (from gemini)', fontsize=12)
 # No legend needed as colors are random and associated with text labels
 
 # Adjust layout and save the figure to a file.
 plt.tight_layout()
-plt.savefig('cost_comparison/cost_comparison_scatter.png')
+plt.savefig(output_png_name)
 
 print("Analysis complete.")

@@ -164,9 +164,10 @@ This cost is determined by speed regulation.
 if __name__ == "__main__":
     # Define the paths for the specific scenario you want to evaluate.
     # To run a new evaluation, simply change the contents of these two variables.
-    scenario_json_path = 'cr_scenarios/USA_Peach-1_1_T-1_t_0.json'
-    trajectory_json_path = 'cr_scenarios/trajectory_USA_Peach-1_1_T-1_0.json'
-    scenario_image_path = "plots/USA_Peach-1_1_T-1_0.png"  # This path isn't directly combined as JSON content
+    base_scenario_name = "USA_Peach-1_1_T-1_30"
+    scenario_json_path = f'cr_scenarios/{base_scenario_name}.json'
+    trajectory_json_path = f'log_trajectory/trajectory_{base_scenario_name}.json'
+    scenario_image_path = f"plots/{base_scenario_name}.png"  # This path isn't directly combined as JSON content
 
     # Load the scenario JSON file
     try:
@@ -210,9 +211,8 @@ if __name__ == "__main__":
         os.makedirs(output_dir, exist_ok=True)
 
         # Create a filename from the scenario base name and a timestamp.
-        base_scenario_name = os.path.splitext(os.path.basename(scenario_json_path))[0]
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_filename = f"{base_scenario_name}_{timestamp}.json"
+        output_filename = f"response_{base_scenario_name}.json"
         output_filepath = os.path.join(output_dir, output_filename)
 
         print(f"\n--- Saving response to {output_filepath} ---")

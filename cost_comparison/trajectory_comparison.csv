@@ -1,7 +1,0 @@
-Trajectory ID,Frenetix Cost,Gemini Cost,Safety Score,Comfort Score,Efficiency Score,Reasons,Frenetix Cost Rank,Gemini Cost Rank
-129,61.06172508378999,1.5,1.0,1.0,3.0,"Excellent safety. The trajectory correctly yields to the left-turning vehicle by slowing down, maintaining perfect lane discipline. The motion is smooth and comfortable. Efficiency is justifiably reduced to ensure safety.",1,1
-540,452.0604597659594,2.0,2.0,2.0,2.0,"Good balanced trajectory. It deviates slightly right to create space from the turning vehicle, maintaining good speed and comfort. A solid alternative to yielding.",4,2
-492,222.1487614877167,2.5,3.0,2.0,2.0,"Acceptable safety. The deviation to the right is more pronounced than necessary, but it remains within the lane. Comfort and efficiency are good.",3,3
-483,1026.3707478522279,3.0,4.0,3.0,1.0,"Poor safety. The trajectory deviates excessively to the right, hugging the lane line. This prioritizes efficiency over safety and comfort.",5,4
-183,1098.8983414365619,3.0,4.0,3.0,1.0,"Poor safety. The trajectory swerves aggressively to the far right of the lane to maintain speed, compromising path adherence and comfort.",6,4
-128,74.34730699918578,4.5,5.0,4.0,4.0,"Unacceptable safety. The trajectory steers left towards the oncoming turning vehicle, creating a high risk of collision. The maneuver is also uncomfortable and inefficient.",2,6
