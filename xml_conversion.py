@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import ast  # To safely evaluate string-formatted lists from the CSV
 import numpy as np  # Make sure to import numpy
+import copy  # For deep copying the scenario template
 
 
 # --- NEW: Custom JSON encoder to handle NumPy types ---
@@ -165,36 +166,52 @@ if __name__ == "__main__":
     input_csv_filename = f"cr_scenarios/{base_scenario_name}/logs.csv"
     start_timestep = 0
     end_timestep = 30
-    dt = 0.1  # Time step duration
+    timestep_step = 5  # This is the step size for the timesteps, can be adjusted as needed
+    dt = 0.1  # Time step duration in seconds
 
-    output_json_full_path = input_xml_filename.rsplit('.', 1)[0] + f"_{target_timestep}.json"
+    output_dir = os.path.dirname(input_xml_filename) # Get the directory for output files
 
-    # --- Read and Parse XML for the base structure and t=0 state ---
+    # --- Step 1: Read and Parse XML and CSV only ONCE ---
     try:
         print(f"--- Reading scenario from '{input_xml_filename}' ---")
         with open(input_xml_filename, 'r', encoding='utf-8') as f:
             xml_data_string = f.read()
-    except FileNotFoundError:
-        print(f"Error: The XML file '{input_xml_filename}' was not found.")
-        sys.exit(1)
 
-    scenario_to_evaluate = convert_xml_to_scenario_dict(xml_data_string, target_timestep, dt)
-    print("--- Parsed XML for t=0 base state. ---")
+        print("--- Parsed XML for base structure. ---")
 
-    # --- Read CSV to update current state and populate history ---
-    try:
         print(f"--- Reading vehicle log from '{input_csv_filename}' ---")
         df = pd.read_csv(input_csv_filename, sep=';')
+        print("--- CSV data loaded into memory. ---")
 
-        # --- Populate Historical States (all steps BEFORE target_timestep) ---
+    except FileNotFoundError as e:
+        print(f"Error: An essential input file was not found: {e}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An error occurred during initial file loading: {e}")
+        sys.exit(1)
+
+    # --- Step 2: Loop through each timestep, generate and SAVE the scenario state ---
+    print(f"\n--- Processing and saving timesteps from {start_timestep} to {end_timestep} ---")
+    files_generated = 0
+    for target_timestep in range(start_timestep, end_timestep + 1, timestep_step):
+
+        # Use a deep copy to ensure each timestep's data is independent
+        scenario_for_timestep = convert_xml_to_scenario_dict(xml_data_string, target_timestep, dt)
+
+        # Check if the target timestep exists in the log data
+        if target_timestep not in df['trajectory_number'].values:
+            print(f"Warning: Timestep {target_timestep} not found in CSV. Skipping file generation.")
+            continue
+
+        # --- Populate Historical States ---
         historical_states = []
-        start_timestep = max(target_timestep - 5, 0)
+        history_start_timestep = max(target_timestep - 5, 0)
         history_df = df[
-            (df['trajectory_number'] >= start_timestep) & (df['trajectory_number'] < target_timestep)].copy()
+            (df['trajectory_number'] >= history_start_timestep) & (df['trajectory_number'] < target_timestep)].copy()
 
         for index, row in history_df.iterrows():
             state = {
-                "timestamp_s": round(row['trajectory_number']*dt, 2),
+                "timestamp_s": round(row['trajectory_number'] * dt, 2),
                 "position_xy": [round(row['x_position_vehicle_m'], 3), round(row['y_position_vehicle_m'], 3)],
                 "velocity_mps": round(float(row['velocities_mps'].split(',')[0]), 3),
                 "acceleration_mps2": round(float(row['accelerations_mps2'].split(',')[0]), 3),
@@ -202,39 +219,30 @@ if __name__ == "__main__":
             }
             historical_states.append(state)
 
-        scenario_to_evaluate["ego_vehicle"]["historical_trajectory"] = historical_states
-        print(f"--- Recorded {len(historical_states)} historical states (timesteps 0 to {target_timestep - 1}). ---")
+        scenario_for_timestep["ego_vehicle"]["historical_trajectory"] = historical_states
 
-        # --- Update Current State if target_timestep > 0 ---
-        if target_timestep > 0:
-            current_state_row = df[df['trajectory_number'] == target_timestep]
+        # --- Update Current State from CSV ---
+        current_state_row = df[df['trajectory_number'] == target_timestep]
+        if not current_state_row.empty:
+            row = current_state_row.iloc[0]
+            current_state_from_csv = {
+                "timestamp_s": round(row['trajectory_number'] * dt, 2),
+                "position_xy": [round(row['x_position_vehicle_m'], 3), round(row['y_position_vehicle_m'], 3)],
+                "velocity_mps": round(float(row['velocities_mps'].split(',')[0]), 3),
+                "acceleration_mps2": round(float(row['accelerations_mps2'].split(',')[0]), 3),
+                "heading_radian": round(float(row['theta_orientations_rad'].split(',')[0]), 3)
+            }
+            scenario_for_timestep["ego_vehicle"]["current_state"] = current_state_from_csv
 
-            if not current_state_row.empty:
-                row = current_state_row.iloc[0]
-                current_state_from_csv = {
-                    "timestamp_s": round(row['trajectory_number']*dt, 2),
-                    "position_xy": [round(row['x_position_vehicle_m'], 3), round(row['y_position_vehicle_m'], 3)],
-                    "velocity_mps": round(float(row['velocities_mps'].split(',')[0]), 3),
-                    "acceleration_mps2": round(float(row['accelerations_mps2'].split(',')[0]), 3),
-                    "heading_radian": round(float(row['theta_orientations_rad'].split(',')[0]), 3)
-                }
-                scenario_to_evaluate["ego_vehicle"]["current_state"] = current_state_from_csv
-                print(f"--- Set current state from CSV for timestep {target_timestep}. ---")
-            else:
-                print(f"Warning: Timestep {target_timestep} not found in CSV. Using t=0 state from XML.")
-        else:
-            print("--- Using t=0 state from XML as current state. ---")
+        # --- Generate filename and save the JSON file for the CURRENT timestep ---
+        output_json_full_path = os.path.join(output_dir, f"{base_scenario_name}_{target_timestep}.json")
 
-    except FileNotFoundError:
-        print(f"Warning: The CSV file '{input_csv_filename}' was not found. State was not updated.")
-    except KeyError as e:
-        print(f"Error: The CSV file is missing a required column: {e}. State was not updated.")
-    except Exception as e:
-        print(f"An unexpected error occurred during CSV processing: {e}")
+        try:
+            with open(output_json_full_path, 'w', encoding='utf-8') as json_file:
+                json.dump(scenario_for_timestep, json_file, indent=4, cls=NumpyEncoder)
+            print(f"  ✅ Timestep {target_timestep} data saved to '{output_json_full_path}'")
+            files_generated += 1
+        except Exception as e:
+            print(f"  ❌ Error saving file for timestep {target_timestep}: {e}")
 
-    # --- Save the resulting dictionary to a JSON file ---
-    print(f"--- Saving final output to '{output_json_full_path}' ---")
-    with open(output_json_full_path, 'w', encoding='utf-8') as json_file:
-        json.dump(scenario_to_evaluate, json_file, indent=4, cls=NumpyEncoder)
-
-    print(f"✅ Process Complete. Output saved to '{output_json_full_path}'.")
+    print(f"\n✅ Process Complete. {files_generated} JSON files were generated.")
