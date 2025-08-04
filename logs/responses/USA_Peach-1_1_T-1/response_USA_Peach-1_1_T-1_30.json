@@ -1,0 +1,45 @@
+{
+    "best_trajectory_id": 122,
+    "evaluation": [
+        {
+            "trajectory_id": 122,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 3.0,
+                "reasons": "Excellent safety and comfort. The trajectory follows the reference path perfectly and maintains a safe following distance. Efficiency is acceptable as it correctly adjusts speed for the lead vehicle."
+            },
+            "total_cost": 1.5
+        },
+        {
+            "trajectory_id": 347,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 4.0,
+                "efficiency": 4.0,
+                "reasons": "Unacceptable safety. The trajectory swerves sharply across the lane line into the path of an oncoming vehicle, creating an immediate collision risk. Comfort is poor due to the aggressive lateral maneuver."
+            },
+            "total_cost": 4.5
+        },
+        {
+            "trajectory_id": 112,
+            "cost_breakdown": {
+                "safety": 3.0,
+                "comfort": 3.0,
+                "efficiency": 3.0,
+                "reasons": "Acceptable, but suboptimal. The trajectory exhibits a noticeable weave within the lane, which reduces safety and comfort compared to a straight path. It stays within the lane but the deviation is unnecessary."
+            },
+            "total_cost": 3.0
+        },
+        {
+            "trajectory_id": 8,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 3.0,
+                "efficiency": 4.0,
+                "reasons": "Poor safety. The trajectory deviates significantly toward the lane line and oncoming traffic without reason, reducing safety margins. The maneuver is inefficient as it adds risk with no benefit."
+            },
+            "total_cost": 3.75
+        }
+    ]
+}

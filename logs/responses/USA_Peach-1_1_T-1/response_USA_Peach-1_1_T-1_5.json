@@ -1,0 +1,45 @@
+{
+    "best_trajectory_id": 261,
+    "evaluation": [
+        {
+            "trajectory_id": 261,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 1.0,
+                "reasons": "Excellent path adherence, staying perfectly centered in the lane. Maintains a maximum safe distance from all oncoming vehicles. The straight path ensures a smooth and comfortable ride while efficiently progressing through the intersection."
+            },
+            "total_cost": 1.0
+        },
+        {
+            "trajectory_id": 734,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 3.0,
+                "efficiency": 2.0,
+                "reasons": "Poor safety due to significant deviation to the right, bringing the vehicle unnecessarily close to oncoming traffic and reducing safety margins. The lateral movement is noticeable and less comfortable than a straight path."
+            },
+            "total_cost": 3.25
+        },
+        {
+            "trajectory_id": 122,
+            "cost_breakdown": {
+                "safety": 3.0,
+                "comfort": 2.0,
+                "efficiency": 2.0,
+                "reasons": "Acceptable safety, but shows a noticeable deviation to the right. While it remains within the lane, this deviation reduces the gap to oncoming traffic for no apparent reason, making it less safe and comfortable than the optimal path."
+            },
+            "total_cost": 2.5
+        },
+        {
+            "trajectory_id": 398,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 5.0,
+                "efficiency": 5.0,
+                "reasons": "Unacceptable trajectory. It makes an abrupt and sharp turn to the left, leaving the intended lane and creating an immediate collision hazard. The maneuver would be extremely uncomfortable and fails to make any progress through the intersection."
+            },
+            "total_cost": 5.0
+        }
+    ]
+}

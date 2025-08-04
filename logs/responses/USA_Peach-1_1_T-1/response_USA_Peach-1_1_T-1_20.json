@@ -1,0 +1,65 @@
+{
+    "best_trajectory_id": 182,
+    "evaluation": [
+        {
+            "trajectory_id": 671,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 2.0,
+                "efficiency": 3.0,
+                "reasons": "Excellent path adherence and safe following distance. The trajectory slows down appropriately for the lead vehicle, resulting in acceptable efficiency but good comfort."
+            },
+            "total_cost": 1.75
+        },
+        {
+            "trajectory_id": 101,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 2.0,
+                "efficiency": 3.0,
+                "reasons": "A safe 'follow' trajectory with excellent path adherence and good comfort. Slowing for the lead vehicle makes efficiency acceptable but not optimal."
+            },
+            "total_cost": 1.75
+        },
+        {
+            "trajectory_id": 182,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 3.0,
+                "reasons": "Optimal 'follow' trajectory. Perfectly centered in the lane, maintaining a safe distance. The deceleration is exceptionally smooth. Efficiency is reduced but is justified by the lead vehicle."
+            },
+            "total_cost": 1.5
+        },
+        {
+            "trajectory_id": 796,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 4.0,
+                "efficiency": 2.0,
+                "reasons": "Unsafe lane change attempt. The trajectory passes too close to the lead vehicle and deviates significantly toward the adjacent lane. The maneuver is abrupt and uncomfortable."
+            },
+            "total_cost": 3.5
+        },
+        {
+            "trajectory_id": 14,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 5.0,
+                "efficiency": 2.0,
+                "reasons": "A highly uncomfortable and unsafe lane change. The maneuver is extremely abrupt, creating a poor passenger experience, and brings the vehicle unnecessarily close to other cars."
+            },
+            "total_cost": 3.75
+        },
+        {
+            "trajectory_id": 195,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 5.0,
+                "efficiency": 5.0,
+                "reasons": "Unacceptable and dangerous trajectory. It deviates far from the reference path, creating an immediate collision risk with the oncoming vehicle. The motion is erratic and it fails to make any valid progress."
+            },
+            "total_cost": 5.0
+        }
+    ]
+}

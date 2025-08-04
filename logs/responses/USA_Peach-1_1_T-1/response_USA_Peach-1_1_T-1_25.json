@@ -1,0 +1,45 @@
+{
+    "best_trajectory_id": 791,
+    "evaluation": [
+        {
+            "trajectory_id": 551,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 5.0,
+                "reasons": "Extremely safe and comfortable but unacceptable efficiency as it fails to make meaningful progress by remaining behind a stopped vehicle when a safe overtake is possible."
+            },
+            "total_cost": 2.0
+        },
+        {
+            "trajectory_id": 709,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 3.0,
+                "efficiency": 2.0,
+                "reasons": "Poor safety due to an overly wide trajectory that significantly reduces the margin to oncoming traffic. Efficiency is good but outweighed by the safety risk."
+            },
+            "total_cost": 3.25
+        },
+        {
+            "trajectory_id": 791,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 2.0,
+                "efficiency": 1.0,
+                "reasons": "Optimal balance of all criteria. It executes a safe, comfortable, and efficient overtake maneuver, maintaining good progress while managing interactions with all other agents."
+            },
+            "total_cost": 1.75
+        },
+        {
+            "trajectory_id": 103,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 5.0,
+                "efficiency": 2.0,
+                "reasons": "Unacceptable comfort due to extreme lateral jerk. The aggressive and late nature of the maneuver also compromises safety by getting too close to the lead vehicle."
+            },
+            "total_cost": 3.75
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "best_trajectory_id": 129,
+    "evaluation": [
+        {
+            "trajectory_id": 129,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 1.0,
+                "efficiency": 1.0,
+                "reasons": "Excellent balance of safety, comfort, and efficiency. The trajectory maintains a centered path, is very smooth, and proceeds without unnecessary deviation, while ensuring a safe margin from the turning vehicle."
+            },
+            "total_cost": 1.5
+        },
+        {
+            "trajectory_id": 540,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 2.0,
+                "efficiency": 2.0,
+                "reasons": "A good, safe trajectory that is slightly more cautious. The minor lateral deviation increases the safety margin but results in slightly lower comfort and efficiency scores compared to the optimal path."
+            },
+            "total_cost": 2.0
+        },
+        {
+            "trajectory_id": 483,
+            "cost_breakdown": {
+                "safety": 3.0,
+                "comfort": 3.0,
+                "efficiency": 3.0,
+                "reasons": "Overly cautious trajectory. The significant lateral deviation is unnecessary, compromising path adherence, comfort due to the S-curve maneuver, and efficiency due to implied speed reduction."
+            },
+            "total_cost": 3.0
+        },
+        {
+            "trajectory_id": 128,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 4.0,
+                "efficiency": 4.0,
+                "reasons": "Unacceptable and dangerous trajectory. It crosses the lane line to the left, creating a high risk of collision with the turning vehicle and exhibiting poor lane discipline."
+            },
+            "total_cost": 4.5
+        },
+        {
+            "trajectory_id": 492,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 2.0,
+                "efficiency": 2.0,
+                "reasons": "A good, well-balanced trajectory, very similar to ID 540. It is safe, comfortable, and efficient, but slightly less optimal than the most direct safe path."
+            },
+            "total_cost": 2.0
+        },
+        {
+            "trajectory_id": 183,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 4.0,
+                "efficiency": 4.0,
+                "reasons": "Poor trajectory due to excessive and unnecessary lateral deviation to the right. This maneuver is uncomfortable, inefficient, and demonstrates poor path adherence by getting too close to the lane edge."
+            },
+            "total_cost": 4.0
+        }
+    ]
+}

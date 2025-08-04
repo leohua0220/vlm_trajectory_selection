@@ -1,0 +1,273 @@
+{
+    "ego_vehicle": {
+        "id": 1500,
+        "current_state": {
+            "timestamp_s": 0.5,
+            "position_xy": [
+                0.374,
+                -6.051
+            ],
+            "velocity_mps": 10.475,
+            "acceleration_mps2": -2.063,
+            "heading_radian": -1.508
+        },
+        "historical_trajectory": [
+            {
+                "timestamp_s": 0.0,
+                "position_xy": [
+                    0.0,
+                    0.0
+                ],
+                "velocity_mps": 13.088,
+                "acceleration_mps2": 0.015,
+                "heading_radian": -1.515
+            },
+            {
+                "timestamp_s": 0.1,
+                "position_xy": [
+                    0.075,
+                    -1.302
+                ],
+                "velocity_mps": 12.949,
+                "acceleration_mps2": -1.331,
+                "heading_radian": -1.514
+            },
+            {
+                "timestamp_s": 0.2,
+                "position_xy": [
+                    0.152,
+                    -2.577
+                ],
+                "velocity_mps": 12.566,
+                "acceleration_mps2": -2.445,
+                "heading_radian": -1.511
+            },
+            {
+                "timestamp_s": 0.3,
+                "position_xy": [
+                    0.23,
+                    -3.804
+                ],
+                "velocity_mps": 11.988,
+                "acceleration_mps2": -3.302,
+                "heading_radian": -1.508
+            },
+            {
+                "timestamp_s": 0.4,
+                "position_xy": [
+                    0.305,
+                    -4.966
+                ],
+                "velocity_mps": 11.272,
+                "acceleration_mps2": -3.858,
+                "heading_radian": -1.507
+            }
+        ]
+    },
+    "dynamic_obstacles": [
+        {
+            "id": 982,
+            "class": "vehicle",
+            "current_state": {
+                "timestamp_s": 0.5,
+                "position_xy": [
+                    7.838,
+                    -29.892
+                ],
+                "velocity_mps": 1.03,
+                "acceleration_mps2": 0.0,
+                "heading_radian": 1.56
+            },
+            "historical_trajectory": [
+                {
+                    "timestamp_s": 0.0,
+                    "position_xy": [
+                        7.83,
+                        -30.408
+                    ],
+                    "velocity_mps": 1.03,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": 1.596
+                },
+                {
+                    "timestamp_s": 0.1,
+                    "position_xy": [
+                        7.832,
+                        -30.305
+                    ],
+                    "velocity_mps": 1.03,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": 1.583
+                },
+                {
+                    "timestamp_s": 0.2,
+                    "position_xy": [
+                        7.833,
+                        -30.201
+                    ],
+                    "velocity_mps": 1.03,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": 1.573
+                },
+                {
+                    "timestamp_s": 0.3,
+                    "position_xy": [
+                        7.835,
+                        -30.098
+                    ],
+                    "velocity_mps": 1.03,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": 1.566
+                },
+                {
+                    "timestamp_s": 0.4,
+                    "position_xy": [
+                        7.837,
+                        -29.995
+                    ],
+                    "velocity_mps": 1.03,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": 1.562
+                }
+            ]
+        },
+        {
+            "id": 999,
+            "class": "vehicle",
+            "current_state": {
+                "timestamp_s": 0.5,
+                "position_xy": [
+                    3.163,
+                    -12.037
+                ],
+                "velocity_mps": 12.585,
+                "acceleration_mps2": -3.417,
+                "heading_radian": -1.513
+            },
+            "historical_trajectory": [
+                {
+                    "timestamp_s": 0.0,
+                    "position_xy": [
+                        2.8,
+                        -5.5
+                    ],
+                    "velocity_mps": 13.088,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": -1.515
+                },
+                {
+                    "timestamp_s": 0.1,
+                    "position_xy": [
+                        2.873,
+                        -6.808
+                    ],
+                    "velocity_mps": 13.088,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": -1.515
+                },
+                {
+                    "timestamp_s": 0.2,
+                    "position_xy": [
+                        2.946,
+                        -8.115
+                    ],
+                    "velocity_mps": 13.088,
+                    "acceleration_mps2": 0.0,
+                    "heading_radian": -1.515
+                },
+                {
+                    "timestamp_s": 0.3,
+                    "position_xy": [
+                        3.018,
+                        -9.422
+                    ],
+                    "velocity_mps": 13.079,
+                    "acceleration_mps2": -0.128,
+                    "heading_radian": -1.515
+                },
+                {
+                    "timestamp_s": 0.4,
+                    "position_xy": [
+                        3.091,
+                        -10.73
+                    ],
+                    "velocity_mps": 12.96,
+                    "acceleration_mps2": -1.893,
+                    "heading_radian": -1.515
+                }
+            ]
+        },
+        {
+            "id": 1026,
+            "class": "vehicle",
+            "current_state": {
+                "timestamp_s": 0.5,
+                "position_xy": [
+                    11.388,
+                    -8.592
+                ],
+                "velocity_mps": 3.655,
+                "acceleration_mps2": -0.18,
+                "heading_radian": 1.717
+            },
+            "historical_trajectory": [
+                {
+                    "timestamp_s": 0.0,
+                    "position_xy": [
+                        11.667,
+                        -10.419
+                    ],
+                    "velocity_mps": 3.737,
+                    "acceleration_mps2": -0.174,
+                    "heading_radian": 1.714
+                },
+                {
+                    "timestamp_s": 0.1,
+                    "position_xy": [
+                        11.609,
+                        -10.05
+                    ],
+                    "velocity_mps": 3.722,
+                    "acceleration_mps2": -0.174,
+                    "heading_radian": 1.724
+                },
+                {
+                    "timestamp_s": 0.2,
+                    "position_xy": [
+                        11.552,
+                        -9.684
+                    ],
+                    "velocity_mps": 3.703,
+                    "acceleration_mps2": -0.18,
+                    "heading_radian": 1.722
+                },
+                {
+                    "timestamp_s": 0.3,
+                    "position_xy": [
+                        11.497,
+                        -9.318
+                    ],
+                    "velocity_mps": 3.688,
+                    "acceleration_mps2": -0.177,
+                    "heading_radian": 1.72
+                },
+                {
+                    "timestamp_s": 0.4,
+                    "position_xy": [
+                        11.442,
+                        -8.954
+                    ],
+                    "velocity_mps": 3.67,
+                    "acceleration_mps2": -0.177,
+                    "heading_radian": 1.719
+                }
+            ]
+        }
+    ],
+    "goal_region": {
+        "center_xy": [
+            1.833,
+            -32.419
+        ]
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "best_trajectory_id": 791,
+    "evaluation": [
+        {
+            "trajectory_id": 531,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 5.0,
+                "reasons": "This trajectory is very safe and comfortable as it waits patiently, maintaining its lane position and a large distance from the oncoming car. However, it is highly inefficient because it makes no progress towards the intended left turn."
+            },
+            "total_cost": 2.0
+        },
+        {
+            "trajectory_id": 143,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 2.0,
+                "efficiency": 5.0,
+                "reasons": "This trajectory has a poor safety score due to significant deviation from the intended left-turn reference path. It is inefficient as it fails to execute the turn, instead proceeding straight. Comfort is acceptable as the motion itself is smooth."
+            },
+            "total_cost": 3.75
+        },
+        {
+            "trajectory_id": 791,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 2.0,
+                "efficiency": 1.0,
+                "reasons": "This is the optimal trajectory. It balances all criteria well by safely yielding to the oncoming vehicle and then executing a smooth, comfortable, and efficient left turn. It follows a good path and makes excellent progress."
+            },
+            "total_cost": 1.75
+        },
+        {
+            "trajectory_id": 499,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 4.0,
+                "efficiency": 4.0,
+                "reasons": "This trajectory is unacceptable due to extreme safety risk. It attempts to cut in front of the oncoming vehicle, creating a high probability of collision. The required abrupt maneuver would also be very uncomfortable and inefficient."
+            },
+            "total_cost": 4.5
+        }
+    ]
+}

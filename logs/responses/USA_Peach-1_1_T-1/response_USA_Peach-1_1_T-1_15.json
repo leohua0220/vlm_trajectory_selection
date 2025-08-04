@@ -1,0 +1,45 @@
+{
+    "best_trajectory_id": 571,
+    "evaluation": [
+        {
+            "trajectory_id": 571,
+            "cost_breakdown": {
+                "safety": 1.0,
+                "comfort": 1.0,
+                "efficiency": 1.0,
+                "reasons": "Excellent path adherence, staying perfectly centered in the lane. The trajectory is smooth and direct, representing the ideal path forward."
+            },
+            "total_cost": 1.0
+        },
+        {
+            "trajectory_id": 758,
+            "cost_breakdown": {
+                "safety": 4.0,
+                "comfort": 3.0,
+                "efficiency": 3.0,
+                "reasons": "Poor safety due to significant deviation towards the left lane line, reducing the margin to the adjacent vehicle. The lateral movement is less comfortable and efficient."
+            },
+            "total_cost": 3.25
+        },
+        {
+            "trajectory_id": 791,
+            "cost_breakdown": {
+                "safety": 2.0,
+                "comfort": 2.0,
+                "efficiency": 1.0,
+                "reasons": "Good performance overall, with only a minor, smooth deviation from the center of the lane. Maintains good safety, comfort, and efficiency."
+            },
+            "total_cost": 1.75
+        },
+        {
+            "trajectory_id": 109,
+            "cost_breakdown": {
+                "safety": 5.0,
+                "comfort": 4.0,
+                "efficiency": 4.0,
+                "reasons": "Unacceptable safety performance. The trajectory makes an abrupt lateral move, crossing the lane line towards an adjacent vehicle, creating a high collision risk. The maneuver is uncomfortable and inefficient."
+            },
+            "total_cost": 4.5
+        }
+    ]
+}
