@@ -69,7 +69,7 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
                 "heading_radian": round(float(orient), 3) if orient is not None else 0.0,
             }
         # Initialize historical_states as an empty list. It will be populated from the CSV.
-        scenario_dict["ego_vehicle"]["historical_states"] = []
+        scenario_dict["ego_vehicle"]["historical_trajectory"] = []
 
         goal_state = planning_problem.find('goalState')
         if goal_state is not None:
@@ -79,7 +79,7 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
             if center_x and center_y:
                 scenario_dict["goal_region"] = {"center_xy": [round(float(center_x), 3), round(float(center_y), 3)]}
             else:
-                scenario_dict["goal_region"] = {"center_xy": [float(72), float(5)]}
+                scenario_dict["goal_region"] = {"center_xy": [0.0, 0.0]}
 
     # Dynamic obstacle parsing remains the same
     for obstacle_node in root.findall('dynamicObstacle'):
@@ -89,37 +89,67 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
         obstacle_dict = {
             "id": int(obs_id) if obs_id else None,
             "class": "vehicle" if obs_type == 'car' else obs_type,
-            "trajectory_history": []
+            "current_state": {},
+            "historical_trajectory": []
         }
 
         obs_initial_state = obstacle_node.find('initialState')
-        if obs_initial_state is not None:
+        if obs_initial_state is not None and not max((current_timestep-5),0):
             time = obs_initial_state.findtext('time/exact')
             pos_x = obs_initial_state.findtext('position/point/x')
             pos_y = obs_initial_state.findtext('position/point/y')
             vel = obs_initial_state.findtext('velocity/exact')
+            acceleration = obs_initial_state.findtext('acceleration/exact')
+            orient = obs_initial_state.findtext('orientation/exact')
 
             initial_state_dict = {
                 "timestamp_s": float(time),
-                "position_xy": [float(pos_x), float(pos_y)],
-                "velocity_mps": float(vel)
+                "position_xy": [round(float(pos_x), 3), round(float(pos_y), 3)],
+                "velocity_mps": round(float(vel), 3),
+                "acceleration_mps2": round(float(acceleration), 3) if acceleration is not None else 0.0,
+                "heading_radian": round(float(orient), 3) if orient is not None else 0.0
             }
-            obstacle_dict["trajectory_history"].append(initial_state_dict)
+            if current_timestep== 0:
+                # If current_timestep is 0, this is the initial state for the obstacle
+                obstacle_dict["current_state"] = initial_state_dict
+            else:
+                # If current_timestep > 0, this is part of the historical trajectory
+                obstacle_dict["historical_trajectory"].append(initial_state_dict)
+
         trajectory_node = obstacle_node.find('trajectory')
         if trajectory_node is not None:
             for state_node in trajectory_node.findall('state'):
                 time_str = state_node.findtext('time/exact')
-                if float(time_str) <= current_timestep:
+                if max((current_timestep-5),0) <= float(time_str) < current_timestep:
                     pos_x = state_node.findtext('position/point/x')
                     pos_y = state_node.findtext('position/point/y')
                     vel = state_node.findtext('velocity/exact')
+                    acceleration = state_node.findtext('acceleration/exact')
+                    orient = state_node.findtext('orientation/exact')
 
                     state_dict = {
                         "timestamp_s": round(float(time_str)*dt,2),
-                        "position_xy": [float(pos_x), float(pos_y)],
-                        "velocity_mps": float(vel)
+                        "position_xy": [round(float(pos_x), 3), round(float(pos_y), 3)],
+                        "velocity_mps": round(float(vel), 3),
+                        "acceleration_mps2": round(float(acceleration), 3) if acceleration is not None else 0.0,
+                        "heading_radian": round(float(orient), 3) if orient is not None else 0.0
                     }
-                    obstacle_dict["trajectory_history"].append(state_dict)
+                    obstacle_dict["historical_trajectory"].append(state_dict)
+                elif float(time_str) == current_timestep:
+                    # This is the current state for the obstacle at the target timestep
+                    pos_x = state_node.findtext('position/point/x')
+                    pos_y = state_node.findtext('position/point/y')
+                    vel = state_node.findtext('velocity/exact')
+                    acceleration = state_node.findtext('acceleration/exact')
+                    orient = state_node.findtext('orientation/exact')
+
+                    obstacle_dict["current_state"] = {
+                        "timestamp_s": round(float(time_str)*dt,2),
+                        "position_xy": [round(float(pos_x), 3), round(float(pos_y), 3)],
+                        "velocity_mps": round(float(vel), 3),
+                        "acceleration_mps2": round(float(acceleration), 3) if acceleration is not None else 0.0,
+                        "heading_radian": round(float(orient), 3) if orient is not None else 0.0
+                    }
 
         scenario_dict["dynamic_obstacles"].append(obstacle_dict)
 
@@ -130,9 +160,11 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
 if __name__ == "__main__":
 
     # --- Configuration ---
-    input_xml_filename = "cr_scenarios/USA_Peach-1_1_T-1.xml"
-    input_csv_filename = "cr_scenarios/logs.csv"
-    target_timestep = 30  # The 'i' you want to set as the current state
+    base_scenario_name = os.path.splitext(os.path.basename("USA_Peach-1_1_T-1.xml"))[0]
+    input_xml_filename = f"cr_scenarios/{base_scenario_name}/{base_scenario_name}.xml"
+    input_csv_filename = f"cr_scenarios/{base_scenario_name}/logs.csv"
+    start_timestep = 0
+    end_timestep = 30
     dt = 0.1  # Time step duration
 
     output_json_full_path = input_xml_filename.rsplit('.', 1)[0] + f"_{target_timestep}.json"
@@ -156,7 +188,9 @@ if __name__ == "__main__":
 
         # --- Populate Historical States (all steps BEFORE target_timestep) ---
         historical_states = []
-        history_df = df[df['trajectory_number'] < target_timestep].copy()
+        start_timestep = max(target_timestep - 5, 0)
+        history_df = df[
+            (df['trajectory_number'] >= start_timestep) & (df['trajectory_number'] < target_timestep)].copy()
 
         for index, row in history_df.iterrows():
             state = {
@@ -168,7 +202,7 @@ if __name__ == "__main__":
             }
             historical_states.append(state)
 
-        scenario_to_evaluate["ego_vehicle"]["historical_states"] = historical_states
+        scenario_to_evaluate["ego_vehicle"]["historical_trajectory"] = historical_states
         print(f"--- Recorded {len(historical_states)} historical states (timesteps 0 to {target_timestep - 1}). ---")
 
         # --- Update Current State if target_timestep > 0 ---

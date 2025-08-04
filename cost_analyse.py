@@ -8,7 +8,7 @@ import os
 
 # --- 1. Load the JSON files ---
 # Load the file containing the Frenetix Costs for each trajectory.
-base_scenario_name = 'USA_Peach-1_1_T-1_30'  # Base name for the scenario, can be modified as needed
+base_scenario_name = 'USA_Peach-1_1_T-1_20'  # Base name for the scenario, can be modified as needed
 file_name_cost = f'frenetix_cost/cost_{base_scenario_name}.json'
 file_name_responses = f'logs/responses/response_{base_scenario_name}.json'
 

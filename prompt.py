@@ -164,7 +164,7 @@ This cost is determined by speed regulation.
 if __name__ == "__main__":
     # Define the paths for the specific scenario you want to evaluate.
     # To run a new evaluation, simply change the contents of these two variables.
-    base_scenario_name = "USA_Peach-1_1_T-1_30"
+    base_scenario_name = "USA_Peach-1_1_T-1_20"
     scenario_json_path = f'cr_scenarios/{base_scenario_name}.json'
     trajectory_json_path = f'log_trajectory/trajectory_{base_scenario_name}.json'
     scenario_image_path = f"plots/{base_scenario_name}.png"  # This path isn't directly combined as JSON content
