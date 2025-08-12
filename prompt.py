@@ -42,7 +42,7 @@ The ego vehicle is blue. The scene includes oncoming traffic. You must evaluate 
 
 Input Data:
 ```json
-{{data_json_string}}
+{data_json_string}
 ```
 
 Evaluation Task:
@@ -100,24 +100,23 @@ This cost is determined by speed regulation.
 * **Output Format:**
   Your response must be a single, raw JSON object with the following structure. Do not include any text outside the JSON.
   ```json
-  {{{{
+  {{
     "best_trajectory_id": "<integer>",
     "evaluation": [
-      {{{{
+      {{
         "trajectory_id": "<integer>",
-        "cost_breakdown": {{{{
+        "cost_breakdown": {{
           "safety": "<float>",
           "comfort": "<float>",
           "efficiency": "<float>",
           "reasons": "<string>"
-        }}}},
+        }},
         "total_cost": "<float>"
-      }}}}
+      }}
     ]
-  }}}}
+  }}
   ```
 """
-
 
     full_prompt = f"{system_message}\n\n---\n\n{user_prompt_template}"
 
@@ -129,7 +128,7 @@ This cost is determined by speed regulation.
     genai.configure(api_key=api_key)
 
     # Use a model that supports multi-modal (text + image) inputs.
-    model = genai.GenerativeModel(model_name="gemini-2.5-pro")
+    model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest")
 
     generation_config = genai.types.GenerationConfig(
         response_mime_type="application/json"
@@ -162,60 +161,65 @@ This cost is determined by speed regulation.
 
 # --- Main Execution Block ---
 if __name__ == "__main__":
-    # Define the paths for the specific scenario you want to evaluate.
-    # To run a new evaluation, simply change the contents of these two variables.
-    base_scenario_name = "USA_Peach-1_1_T-1_20"
-    scenario_json_path = f'cr_scenarios/{base_scenario_name}.json'
-    trajectory_json_path = f'log_trajectory/trajectory_{base_scenario_name}.json'
-    scenario_image_path = f"plots/{base_scenario_name}.png"  # This path isn't directly combined as JSON content
+    # Define the base scenario name
+    base_scenario_name = "USA_Peach-1_1_T-1"
 
-    # Load the scenario JSON file
-    try:
-        with open(scenario_json_path, 'r', encoding='utf-8') as f:
-            scenario_data = json.load(f)
-    except FileNotFoundError:
-        print(f"Error: Scenario JSON file not found at {scenario_json_path}")
-        exit()
-    except json.JSONDecodeError:
-        print(f"Error: Could not decode JSON from {scenario_json_path}")
-        exit()
+    # Define the list of timesteps to process
+    timesteps = [0, 5, 10, 15, 20, 25, 30]
 
-    # Load the trajectory JSON file
-    try:
-        with open(trajectory_json_path, 'r', encoding='utf-8') as f:
-            trajectory_data = json.load(f)
-    except FileNotFoundError:
-        print(f"Error: Trajectory JSON file not found at {trajectory_json_path}")
-        exit()
-    except json.JSONDecodeError:
-        print(f"Error: Could not decode JSON from {trajectory_json_path}")
-        exit()
+    print(f"--- Starting Batch Evaluation for Scenario: {base_scenario_name} ---")
 
-    # Combine the two JSON contents into a single dictionary
-    # We'll put them under distinct keys to avoid conflicts if they have overlapping keys
-    combined_input = {
-        'scenario_context': scenario_data,
-        'trajectory_details': trajectory_data
-    }
+    # Loop through each timestep in the list
+    for timestep in timesteps:
+        print(f"\n{'=' * 25} Processing Timestep: {timestep} {'=' * 25}")
 
-    print("--- Evaluating Motion Planning Scenario ---")
-    # Call the function with both the scenario data and the image path.
-    evaluation_result = evaluate_scenario_from_single_prompt(combined_input, scenario_image_path)
+        # Dynamically define file paths for the current timestep
+        scenario_json_path = f'cr_scenarios/{base_scenario_name}/{base_scenario_name}_{timestep}.json'
+        trajectory_json_path = f'log_trajectory/{base_scenario_name}/trajectory_{base_scenario_name}_{timestep}.json'
+        scenario_image_path = f"plots/{base_scenario_name}/{base_scenario_name}_{timestep}.png"
 
-    if evaluation_result:
-        print("\n--- Evaluation Result ---")
-        print(json.dumps(evaluation_result, indent=2))
+        # Load data for the current timestep
+        try:
+            with open(scenario_json_path, 'r', encoding='utf-8') as f:
+                scenario_data = json.load(f)
+            with open(trajectory_json_path, 'r', encoding='utf-8') as f:
+                trajectory_data = json.load(f)
+        except FileNotFoundError as e:
+            print(f"Error: A required file for timestep {timestep} was not found. Skipping.")
+            print(f"Missing file: {e.filename}")
+            continue  # Skip to the next timestep if a file is missing
+        except json.JSONDecodeError as e:
+            print(f"Error: Could not decode JSON for timestep {timestep}. Skipping. Details: {e}")
+            continue  # Skip to the next timestep
 
-        # --- Save the result to a log file ---
-        output_dir = os.path.join("logs", "responses")
-        os.makedirs(output_dir, exist_ok=True)
+        # Combine the two JSON contents into a single dictionary
+        combined_input = {
+            'scenario_context': scenario_data,
+            'trajectory_details': trajectory_data
+        }
 
-        # Create a filename from the scenario base name and a timestamp.
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_filename = f"response_{base_scenario_name}.json"
-        output_filepath = os.path.join(output_dir, output_filename)
+        print(f"--- Evaluating Motion Planning Scenario for Timestep {timestep} ---")
+        # Call the evaluation function for the current timestep
+        evaluation_result = evaluate_scenario_from_single_prompt(combined_input, scenario_image_path)
 
-        print(f"\n--- Saving response to {output_filepath} ---")
-        with open(output_filepath, 'w', encoding='utf-8') as f_out:
-            json.dump(evaluation_result, f_out, indent=4)
-        print("Save complete.")
+        if evaluation_result:
+            print(f"\n--- Evaluation Result for Timestep {timestep} ---")
+            print(json.dumps(evaluation_result, indent=2))
+
+            # --- Save the result to a log file ---
+            # Create a subdirectory for the specific scenario to keep results organized
+            output_dir = os.path.join("logs", "responses", base_scenario_name)
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Create a unique filename for the current timestep's result
+            output_filename = f"response_wo_dspy_{base_scenario_name}_{timestep}.json"
+            output_filepath = os.path.join(output_dir, output_filename)
+
+            print(f"\n--- Saving response to {output_filepath} ---")
+            with open(output_filepath, 'w', encoding='utf-8') as f_out:
+                json.dump(evaluation_result, f_out, indent=4)
+            print("Save complete.")
+        else:
+            print(f"--- No result returned from API for Timestep {timestep} ---")
+
+    print(f"\n{'=' * 25} Batch Evaluation Complete {'=' * 25}")

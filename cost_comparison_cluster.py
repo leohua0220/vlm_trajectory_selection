@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
 
-def plot_cost_clusters_with_full_highlights(directory_path, file_pattern='cost_comparison_USA_Peach-1_1_T-1_*.csv',
+def plot_cost_clusters_with_full_highlights(directory_path, base_scenario_name, file_pattern='cost_comparison_USA_Peach-1_1_T-1_*.csv',
                                             n_clusters=4):
     """
     Performs K-Means clustering and visualizes the results, highlighting the
@@ -36,7 +36,7 @@ def plot_cost_clusters_with_full_highlights(directory_path, file_pattern='cost_c
     all_points_df = pd.concat(all_dfs, ignore_index=True)
 
     # --- 1. Identify Best Trajectories (same as before) ---
-    idx_best_gemini = pd.Index(all_points_df.groupby('Timestamp')['Gemini Cost'].idxmin().values)
+    idx_best_gemini = pd.Index(all_points_df.groupby('Timestamp')['VLM Cost'].idxmin().values)
     idx_best_frenetix = pd.Index(all_points_df.groupby('Timestamp')['Frenetix Cost'].idxmin().values)
 
     idx_same_best = idx_best_gemini.intersection(idx_best_frenetix)
@@ -48,7 +48,7 @@ def plot_cost_clusters_with_full_highlights(directory_path, file_pattern='cost_c
     same_best_points = all_points_df.loc[idx_same_best]
 
     # --- 2. Clustering (same as before) ---
-    costs_df = all_points_df[['Frenetix Cost', 'Gemini Cost']].dropna()
+    costs_df = all_points_df[['Frenetix Cost', 'VLM Cost']].dropna()
     scaler = StandardScaler();
     scaled_costs = scaler.fit_transform(costs_df)
     kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init='auto')
@@ -60,40 +60,40 @@ def plot_cost_clusters_with_full_highlights(directory_path, file_pattern='cost_c
 
     # Plot all data points first
     sns.scatterplot(
-        data=all_points_df, x='Frenetix Cost', y='Gemini Cost', hue='Cluster',
+        data=all_points_df, x='Frenetix Cost', y='VLM Cost', hue='Cluster',
         palette='viridis', alpha=0.6, s=50, zorder=3
     )
 
     # --- 4. Add Highlighted Points and Labels ---
     # Highlight best for Frenetix ONLY
     plt.scatter(
-        best_frenetix_only_points['Frenetix Cost'], best_frenetix_only_points['Gemini Cost'],
+        best_frenetix_only_points['Frenetix Cost'], best_frenetix_only_points['VLM Cost'],
         marker='*', s=200, facecolors='cyan', edgecolors='black',
         linewidth=1.5, label='Best Frenetix Only', zorder=3
     )
     for idx, row in best_frenetix_only_points.iterrows():
-        plt.text(row['Frenetix Cost'], row['Gemini Cost'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
+        plt.text(row['Frenetix Cost'], row['VLM Cost'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
                  va='center',fontweight='bold',zorder=1)
 
     # Highlight best for Gemini ONLY
     plt.scatter(
-        best_gemini_only_points['Frenetix Cost'], best_gemini_only_points['Gemini Cost'],
+        best_gemini_only_points['Frenetix Cost'], best_gemini_only_points['VLM Cost'],
         marker='*', s=200, facecolors='magenta', edgecolors='black',
         linewidth=1.5, label='Best Gemini Only', zorder=3
     )
     for idx, row in best_gemini_only_points.iterrows():
-        plt.text(row['Frenetix Cost'], row['Gemini Cost'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
+        plt.text(row['Frenetix Cost'], row['VLM Cost'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
                  va='center',fontweight='bold',zorder=1)
 
     # Highlight points that are best for BOTH
     if not same_best_points.empty:
         plt.scatter(
-            same_best_points['Frenetix Cost'], same_best_points['Gemini Cost'],
+            same_best_points['Frenetix Cost'], same_best_points['VLM Cost'],
             marker='P', s=250, facecolors='gold', edgecolors='black',  # 'P' is a filled plus sign
             linewidth=1.5, label='Best for Both', zorder=4
         )
         for idx, row in same_best_points.iterrows():
-            plt.text(row['Frenetix Cost'], row['Gemini Cost'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
+            plt.text(row['Frenetix Cost'], row['VLM Cost'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
                      va='center',fontweight='bold',zorder=1)
 
     plt.title(f'Cost Relationship via K-Means Clustering (k={n_clusters})', fontsize=16, weight='bold')
@@ -103,13 +103,15 @@ def plot_cost_clusters_with_full_highlights(directory_path, file_pattern='cost_c
     plt.grid(True, which='both', linestyle='--', linewidth=0.5)
 
     plt.tight_layout()
-    output_path = "cost_comparison/cost_cluster_plot_final.png"
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    plt.savefig(output_path, dpi=300)
+    output_dir = os.path.dirname(f"{directory_path}/cost_{base_scenario_name}_all.png")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    plt.savefig(f"{directory_path}/cost_{base_scenario_name}_all.png", dpi=300)
     plt.show()
 
 
 # --- Run the function ---
 if __name__ == '__main__':
-    data_directory = 'cost_comparison'
-    plot_cost_clusters_with_full_highlights(data_directory, n_clusters=4)
+    base_scenario_name = 'USA_US101-29_1_T-1'
+    data_directory = f'cost_comparison/{base_scenario_name}'
+    plot_cost_clusters_with_full_highlights(data_directory, base_scenario_name,file_pattern=f'cost_comparison_{base_scenario_name}_*.csv', n_clusters=4)

@@ -1,26 +1,28 @@
+from os import mkdir
+
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 import glob
 import re
-import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 
-def analyze_and_plot_all_points(directory_path, file_pattern='cost_comparison_USA_Peach-1_1_T-1_*.csv'):
+def plot_cost_comparison_with_highlights(directory_path, base_scenario_name,
+                                         file_pattern):
     """
-    Reads trajectory cost CSVs, and plots all individual data points along with
-    the mean trend line on a dual y-axis chart.
+    Visualizes the normalized cost comparison, highlighting the best trajectory
+    from each algorithm with timestamp labels.
     """
+    # --- Data Loading ---
     search_path = os.path.join(directory_path, file_pattern)
     file_paths = glob.glob(search_path)
-
     if not file_paths:
-        print(f"Error: No files found matching pattern '{file_pattern}' in directory '{directory_path}'.")
+        print(f"Error: No files found for pattern {file_pattern}")
         return
-
     all_dfs = []
     pattern = re.compile(r'_(\d+)\.csv$')
-
     for path in file_paths:
         match = pattern.search(os.path.basename(path))
         if match:
@@ -28,65 +30,126 @@ def analyze_and_plot_all_points(directory_path, file_pattern='cost_comparison_US
             try:
                 df = pd.read_csv(path, skipinitialspace=True)
                 df.columns = df.columns.str.strip()
-                df['Timestamp'] = timestamp
-                all_dfs.append(df)
-            except (FileNotFoundError, pd.errors.EmptyDataError, KeyError) as e:
-                print(f"Warning: Could not process file {path}. Error: {e}")
-                continue
+                # Ensure required columns exist
+                if 'VLM Cost' in df.columns and 'Frenetix Cost' in df.columns:
+                    df['Timestamp'] = timestamp
+                    all_dfs.append(df)
+                else:
+                    print(f"Warning: Skipping {path} due to missing cost columns.")
+            except Exception as e:
+                print(f"Error reading {path}: {e}")
 
     if not all_dfs:
-        print("Error: No valid data could be extracted.")
+        print("Error: No valid data extracted from files.")
         return
-
     all_points_df = pd.concat(all_dfs, ignore_index=True)
 
-    mean_costs_df = all_points_df.groupby('Timestamp').agg({
-        'Frenetix Cost': 'mean',
-        'Gemini Cost': 'mean'
-    }).reset_index()
+    # --- Data Normalization ---
+    # Use MinMaxScaler to scale both cost columns to a [0, 1] range.
+    # This makes the comparison visually more intuitive.
+    scaler = MinMaxScaler()
+    all_points_df[['Frenetix Cost Norm', 'VLM Cost Norm']] = scaler.fit_transform(
+        all_points_df[['Frenetix Cost', 'VLM Cost']]
+    )
 
-    print("Aggregated Mean Costs per Timestamp:")
-    print(mean_costs_df)
+    # --- 1. Identify Best Trajectories (using original costs) ---
+    # The minimum of the normalized value is the same as the minimum of the original value,
+    # so we can use the original columns here without issue.
+    idx_best_gemini = pd.Index(all_points_df.groupby('Timestamp')['VLM Cost'].idxmin().values)
+    idx_best_frenetix = pd.Index(all_points_df.groupby('Timestamp')['Frenetix Cost'].idxmin().values)
 
-    # --- Plotting all points with a mean trend line ---
+    idx_same_best = idx_best_gemini.intersection(idx_best_frenetix)
+    idx_best_gemini_only = idx_best_gemini.difference(idx_same_best)
+    idx_best_frenetix_only = idx_best_frenetix.difference(idx_same_best)
+
+    best_gemini_only_points = all_points_df.loc[idx_best_gemini_only]
+    best_frenetix_only_points = all_points_df.loc[idx_best_frenetix_only]
+    same_best_points = all_points_df.loc[idx_same_best]
+    print(f'number of best points for Frenetix only: {len(best_frenetix_only_points)}')
+    print(f'number of best points for Gemini only: {len(best_gemini_only_points)}')
+    print(f'number of best points for both: {len(same_best_points)}')
+    print(f'number of timestamps with data: {len(all_points_df["Timestamp"].unique())}')
+
+    # --- 2. Create the Plot ---
     plt.style.use('seaborn-v0_8-whitegrid')
-    fig, ax1 = plt.subplots(figsize=(12, 8))
+    plt.figure(figsize=(14, 12))
 
-    # --- Frenetix Cost (Left Axis) ---
-    color1 = 'tab:blue'
-    ax1.set_xlabel('Timestamp', fontsize=12)
-    ax1.set_ylabel('Frenetix Cost', fontsize=12, color=color1)
-    ax1.tick_params(axis='y', labelcolor=color1)
-    ax1.scatter(all_points_df['Timestamp'], all_points_df['Frenetix Cost'], alpha=0.2, color=color1)
-    # The plot() function returns a list of Line2D objects; we'll use the first one for the legend
-    line1 = ax1.plot(mean_costs_df['Timestamp'], mean_costs_df['Frenetix Cost'], color=color1, marker='o',
-                     linestyle='-', linewidth=2.5, label='Frenetix (Mean)')
+    # Plot all data points first using NORMALIZED values
+    plt.scatter(
+        all_points_df['Frenetix Cost Norm'], all_points_df['VLM Cost Norm'],
+        color='gray', alpha=0.5, s=50, label='All Trajectories', zorder=2
+    )
 
-    # --- Gemini Cost (Right Axis) ---
-    ax2 = ax1.twinx()
-    color2 = 'tab:red'
-    ax2.set_ylabel('Gemini Cost', fontsize=12, color=color2)
-    ax2.tick_params(axis='y', labelcolor=color2)
-    ax2.scatter(all_points_df['Timestamp'], all_points_df['Gemini Cost'], alpha=0.2, color=color2)
-    line2 = ax2.plot(mean_costs_df['Timestamp'], mean_costs_df['Gemini Cost'], color=color2, marker='s', linestyle='--',
-                     linewidth=2.5, label='Gemini (Mean)')
+    # --- 3. Add Highlighted Points and Labels (using NORMALIZED values) ---
+    # Highlight best for Frenetix ONLY
+    plt.scatter(
+        best_frenetix_only_points['Frenetix Cost Norm'], best_frenetix_only_points['VLM Cost Norm'],
+        color='blue', alpha=0.5, s=50,
+     label='Best Frenetix Only', zorder=3
+    )
+    for idx, row in best_frenetix_only_points.iterrows():
+        plt.text(row['Frenetix Cost Norm'], row['VLM Cost Norm'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
+                 va='center', fontweight='bold', zorder=1)
 
-    # --- Final Touches (Simplified Legend Creation) ---
-    fig.suptitle('Cost Distribution and Mean Trend', fontsize=16, weight='bold')
-    # Create the legend by explicitly passing the handles of the two mean-lines
-    ax1.legend(handles=[line1[0], line2[0]], loc='upper left')
+    # Highlight best for Gemini ONLY
+    plt.scatter(
+        best_gemini_only_points['Frenetix Cost Norm'], best_gemini_only_points['VLM Cost Norm'],
+        color='red', alpha=0.5, s=50,
+        linewidth=1.5, label='Best Gemini Only', zorder=3
+    )
+    for idx, row in best_gemini_only_points.iterrows():
+        plt.text(row['Frenetix Cost Norm'], row['VLM Cost Norm'], f"   {int(row['Timestamp'])}", fontsize=10, ha='left',
+                 va='center', fontweight='bold', zorder=1)
 
-    fig.tight_layout()
-    # Ensure the output directory exists before saving
-    output_dir = os.path.dirname("cost_comparison/cost_USA_Peach-1_1_T-1_all.png")
+    # Highlight points that are best for BOTH
+    if not same_best_points.empty:
+        plt.scatter(
+            same_best_points['Frenetix Cost Norm'], same_best_points['VLM Cost Norm'],
+            color='green', alpha=0.5, s=50,
+            linewidth=1.5, label='Best for Both', zorder=4
+        )
+        for idx, row in same_best_points.iterrows():
+            plt.text(row['Frenetix Cost Norm'], row['VLM Cost Norm'], f"   {int(row['Timestamp'])}", fontsize=10,
+                     ha='left',
+                     va='center', fontweight='bold', zorder=1)
+
+    plt.title('Normalized Cost Comparison: Frenetix vs. GEMINI-2.5-pro (with DSPY)', fontsize=16, weight='bold')
+    plt.xlabel('Frenetix Cost', fontsize=12)
+    plt.ylabel('GEMINI Cost', fontsize=12)
+    plt.legend(title='Legend')
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+
+    # Set axis limits to be slightly larger than the [0,1] range for better visualization
+    plt.xlim(-0.05, 1.05)
+    plt.ylim(-0.05, 1.05)
+
+    # Add a y=x line for reference
+    plt.plot([0, 1], [0, 1], 'r--', linewidth=1.5, label='y=x (Equal Cost)')
+
+    plt.tight_layout()
+    output_filename = f"{directory_path}/cost_{base_scenario_name}_all_normalized_dspy.png"
+    output_dir = os.path.dirname(output_filename)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    plt.savefig("cost_comparison/cost_USA_Peach-1_1_T-1_all.png", dpi=300)
+    plt.savefig(output_filename, dpi=300)
     plt.show()
 
 
+# --- Run the function ---
 if __name__ == '__main__':
-    data_directory = 'cost_comparison'
-    # To run this standalone, you'd need dummy data. Assuming it exists.
-    # To create dummy data, you can use a function like in previous examples.
-    analyze_and_plot_all_points(data_directory)
+    base_scenario_name = 'USA_Peach-1_1_T-1'
+    data_directory = f'cost_comparison/{base_scenario_name}'
+    if not os.path.exists(data_directory):
+        os.makedirs(data_directory)
+
+    # Ensure the directory exists before running
+    if os.path.exists(data_directory):
+        plot_cost_comparison_with_highlights(
+            data_directory,
+            base_scenario_name,
+            file_pattern=f'dspy_{base_scenario_name}_*.csv'
+        )
+    else:
+        print(f"Error: Data directory not found at '{data_directory}'")
+        print("Please ensure the data is in the correct location.")
+

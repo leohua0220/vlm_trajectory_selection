@@ -91,7 +91,7 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
             "id": int(obs_id) if obs_id else None,
             "class": "vehicle" if obs_type == 'car' else obs_type,
             "current_state": {},
-            "historical_trajectory": []
+            # "historical_trajectory": []
         }
 
         obs_initial_state = obstacle_node.find('initialState')
@@ -113,30 +113,30 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
             if current_timestep== 0:
                 # If current_timestep is 0, this is the initial state for the obstacle
                 obstacle_dict["current_state"] = initial_state_dict
-            else:
-                # If current_timestep > 0, this is part of the historical trajectory
-                obstacle_dict["historical_trajectory"].append(initial_state_dict)
+            # else:
+            #     # If current_timestep > 0, this is part of the historical trajectory
+            #     obstacle_dict["historical_trajectory"].append(initial_state_dict)
 
         trajectory_node = obstacle_node.find('trajectory')
         if trajectory_node is not None:
             for state_node in trajectory_node.findall('state'):
                 time_str = state_node.findtext('time/exact')
-                if max((current_timestep-5),0) <= float(time_str) < current_timestep:
-                    pos_x = state_node.findtext('position/point/x')
-                    pos_y = state_node.findtext('position/point/y')
-                    vel = state_node.findtext('velocity/exact')
-                    acceleration = state_node.findtext('acceleration/exact')
-                    orient = state_node.findtext('orientation/exact')
-
-                    state_dict = {
-                        "timestamp_s": round(float(time_str)*dt,2),
-                        "position_xy": [round(float(pos_x), 3), round(float(pos_y), 3)],
-                        "velocity_mps": round(float(vel), 3),
-                        "acceleration_mps2": round(float(acceleration), 3) if acceleration is not None else 0.0,
-                        "heading_radian": round(float(orient), 3) if orient is not None else 0.0
-                    }
-                    obstacle_dict["historical_trajectory"].append(state_dict)
-                elif float(time_str) == current_timestep:
+                # if max((current_timestep-5),0) <= float(time_str) < current_timestep:
+                #     pos_x = state_node.findtext('position/point/x')
+                #     pos_y = state_node.findtext('position/point/y')
+                #     vel = state_node.findtext('velocity/exact')
+                #     acceleration = state_node.findtext('acceleration/exact')
+                #     orient = state_node.findtext('orientation/exact')
+                #
+                #     state_dict = {
+                #         "timestamp_s": round(float(time_str)*dt,2),
+                #         "position_xy": [round(float(pos_x), 3), round(float(pos_y), 3)],
+                #         "velocity_mps": round(float(vel), 3),
+                #         "acceleration_mps2": round(float(acceleration), 3) if acceleration is not None else 0.0,
+                #         "heading_radian": round(float(orient), 3) if orient is not None else 0.0
+                #     }
+                #     obstacle_dict["historical_trajectory"].append(state_dict)
+                if float(time_str) == current_timestep:
                     # This is the current state for the obstacle at the target timestep
                     pos_x = state_node.findtext('position/point/x')
                     pos_y = state_node.findtext('position/point/y')
@@ -161,11 +161,11 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
 if __name__ == "__main__":
 
     # --- Configuration ---
-    base_scenario_name = os.path.splitext(os.path.basename("USA_Peach-1_1_T-1.xml"))[0]
+    base_scenario_name = os.path.splitext(os.path.basename("USA_US101-29_1_T-1.xml"))[0]
     input_xml_filename = f"cr_scenarios/{base_scenario_name}/{base_scenario_name}.xml"
     input_csv_filename = f"cr_scenarios/{base_scenario_name}/logs.csv"
     start_timestep = 0
-    end_timestep = 30
+    end_timestep = 170
     timestep_step = 5  # This is the step size for the timesteps, can be adjusted as needed
     dt = 0.1  # Time step duration in seconds
 

@@ -1,109 +1,142 @@
+import os
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import random # Import random for generating random colors
-import os
-
-# --- 1. Load the JSON files ---
-# Load the file containing the Frenetix Costs for each trajectory.
-base_scenario_name = 'USA_Peach-1_1_T-1_20'  # Base name for the scenario, can be modified as needed
-file_name_cost = f'frenetix_cost/cost_{base_scenario_name}.json'
-file_name_responses = f'logs/responses/response_{base_scenario_name}.json'
-
-# base_scenario_name = os.path.splitext(os.path.basename(file_name_responses))[0]
-output_csv_name = f'cost_comparison/cost_comparison_{base_scenario_name}.csv'
-output_png_name = f'cost_comparison/cost_comparison_{base_scenario_name}.png'
-
-with open(file_name_cost, 'r') as f:
-    cost_data = json.load(f)
-
-# Load the file containing the human-like evaluation scores.
-with open(file_name_responses, 'r') as f:
-    evaluation_data = json.load(f)
-
-# --- 2. Extract and merge the data from both files ---
-merged_data = []
-# Iterate through each trajectory in the evaluation file.
-for evaluation in evaluation_data['evaluation']:
-    traj_id = evaluation['trajectory_id']
-    # Construct the key to look up the cost in the other file.
-    traj_key = f"trajectory_id:{traj_id}"
-
-    # Check if the trajectory exists in the cost data file.
-    if traj_key in cost_data:
-        # Get the Frenetix Cost.
-        algo_cost = cost_data[traj_key]['cost']
-        # Append all relevant information into a dictionary.
-        merged_data.append({
-            'Trajectory ID': traj_id,
-            'Frenetix Cost': algo_cost,
-            'Gemini Cost': evaluation['total_cost'],
-            'Safety Score': evaluation['cost_breakdown']['safety'],
-            'Comfort Score': evaluation['cost_breakdown']['comfort'],
-            'Efficiency Score': evaluation['cost_breakdown']['efficiency'],
-            'Reasons': evaluation['cost_breakdown']['reasons']
-        })
-
-# --- 3. Create a Pandas DataFrame ---
-# Convert the list of dictionaries into a DataFrame for easier analysis.
-df = pd.DataFrame(merged_data)
-
-# --- 4. Calculate Ranks ---
-# Rank trajectories based on their Frenetix Cost (lower is better).
-df['Frenetix Cost Rank'] = df['Frenetix Cost'].rank().astype(int)
-# Rank trajectories based on their Gemini Cost (lower is better).
-# 'min' method ensures that trajectories with the same cost get the same rank.
-df['Gemini Cost Rank'] = df['Gemini Cost'].rank(method='min').astype(int)
-
-# Sort the DataFrame by evaluation rank for better readability.
-df_sorted = df.sort_values('Gemini Cost Rank')
-
-# --- 5. Save the merged data to a CSV file ---
-# This allows you to inspect the combined data easily in a spreadsheet viewer.
-df_sorted.to_csv(output_csv_name, index=False)
-
-# --- 6. Visualization ---
-# Set the visual style for the plot.
-plt.style.use('seaborn-v0_8-whitegrid')
-# Create a figure and axes for the plot.
-fig, ax = plt.subplots(figsize=(10, 7))
-
-# Generate a list of unique random colors for each point
-# We'll use a qualitative palette from seaborn for better distinctiveness if the number of points is small
-# Or generate entirely random RGB colors if many points are expected and distinctiveness isn't paramount
-num_points = len(df)
-# Using a seaborn palette with enough distinct colors
-if num_points <= 10: # A smaller number of points, we can use a qualitative palette
-    colors = sns.color_palette("tab10", num_points)
-elif num_points <= 20: # For a slightly larger set, another qualitative palette
-    colors = sns.color_palette("Paired", num_points)
-else: # For a larger number of points, generate truly random colors
-    colors = [(random.random(), random.random(), random.random()) for _ in range(num_points)]
-
-# Create the scatter plot using seaborn.
-# Iterate through each row and plot individually to assign a unique color
-for i, row in df.iterrows():
-    ax.scatter(
-        row['Frenetix Cost'],
-        row['Gemini Cost'],
-        color=colors[i], # Assign a unique color to each point
-        s=200, # Set the size of the points.
-        alpha=0.8 # Add some transparency
-    )
-    # Add text labels next to each point for easy identification.
-    ax.text(row['Frenetix Cost'] + 1, row['Gemini Cost'], f"ID: {row['Trajectory ID']}", fontsize=9)
+import random
 
 
-# Set titles and labels for clarity.
-ax.set_title(f'Frenetix Cost vs. VLM Cost (timestamp: {base_scenario_name[-1]})', fontsize=16, weight='bold')
-ax.set_xlabel('Frenetix Cost (from Frenetix)', fontsize=12)
-ax.set_ylabel('VLM Cost (from gemini)', fontsize=12)
-# No legend needed as colors are random and associated with text labels
+def analyze_timestep(base_scenario_name: str, timestep: int):
+    """
+    Analyzes and visualizes cost data for a single scenario timestep.
 
-# Adjust layout and save the figure to a file.
-plt.tight_layout()
-plt.savefig(output_png_name)
+    This function loads cost data and VLM evaluation data, merges them,
+    calculates ranks, and saves the output as a CSV and a PNG plot.
+    """
+    print(f"\n{'=' * 20} Processing Timestep: {timestep} {'=' * 20}")
 
-print("Analysis complete.")
+    # --- 1. Define file paths for the current timestep ---
+    file_name_cost = f'frenetix_cost/{base_scenario_name}/cost_{base_scenario_name}_{timestep}.json'
+    file_name_responses = f'logs/responses/{base_scenario_name}/dspy_{base_scenario_name}_{timestep}.json'
+
+    # Define output paths
+    output_dir = f'cost_comparison/{base_scenario_name}'
+    os.makedirs(output_dir, exist_ok=True)  # Ensure the output directory exists
+    output_csv_name = f'{output_dir}/dspy_{base_scenario_name}_{timestep}.csv'
+    output_png_name = f'{output_dir}/dspy_{base_scenario_name}_{timestep}.png'
+
+    # --- 2. Load the JSON files ---
+    try:
+        with open(file_name_cost, 'r') as f:
+            cost_data = json.load(f)
+        with open(file_name_responses, 'r') as f:
+            evaluation_data = json.load(f)
+    except FileNotFoundError as e:
+        print(f"Error: Missing a data file for timestep {timestep}. Skipping.")
+        print(f"-> Details: {e}")
+        return  # Exit the function for this timestep
+
+    # --- 3. Extract and merge the data ---
+    merged_data = []
+    for traj_key, evaluation in evaluation_data.items():
+        if not traj_key.startswith("trajectory_id:"):
+            continue
+
+        if traj_key in cost_data:
+            try:
+                traj_id = int(traj_key.split(':')[1])
+                algo_cost = cost_data[traj_key]['cost']
+                vlm_cost = evaluation['cost']
+                vlm_cost_breakdown = evaluation['costMap']
+
+                merged_data.append({
+                    'Trajectory ID': traj_id,
+                    'Frenetix Cost': algo_cost,
+                    'VLM Cost': vlm_cost,
+                    'Lateral Jerk': vlm_cost_breakdown.get('lateral_jerk', [0, 0])[0],
+                    'Longitudinal Jerk': vlm_cost_breakdown.get('longitudinal_jerk', [0, 0])[0],
+                    'Velocity Offset': vlm_cost_breakdown.get('velocity_offset', [0, 0])[0],
+                })
+            except (ValueError, IndexError, KeyError) as e:
+                print(f"Skipping key '{traj_key}' in timestep {timestep} due to parsing error: {e}")
+    # for evaluation in evaluation_data['evaluation']:
+    #     traj_id = evaluation['trajectory_id']
+    #     # Construct the key to look up the cost in the other file.
+    #     traj_key = f"trajectory_id:{traj_id}"
+    #
+    #     # Check if the trajectory exists in the cost data file.
+    #     if traj_key in cost_data:
+    #         # Get the Frenetix Cost.
+    #         algo_cost = cost_data[traj_key]['cost']
+    #         # Append all relevant information into a dictionary.
+    #         merged_data.append({
+    #             'Trajectory ID': traj_id,
+    #             'Frenetix Cost': algo_cost,
+    #             'VLM Cost': evaluation['total_cost'],
+    #             'Safety Score': evaluation['cost_breakdown']['safety'],
+    #             'Comfort Score': evaluation['cost_breakdown']['comfort'],
+    #             'Efficiency Score': evaluation['cost_breakdown']['efficiency'],
+    #             'Reasons': evaluation['cost_breakdown']['reasons']
+    #         })
+
+    # --- 4. Create DataFrame and calculate ranks ---
+    if not merged_data:
+        print(f"No valid trajectory data found to merge for timestep {timestep}. Skipping.")
+        return
+
+    df = pd.DataFrame(merged_data)
+    df['Frenetix Cost Rank'] = df['Frenetix Cost'].rank().astype(int)
+    df['VLM Cost Rank'] = df['VLM Cost'].rank(method='min').astype(int)
+    df_sorted = df.sort_values('VLM Cost Rank')
+
+    # --- 5. Save the merged data to a CSV file ---
+    df_sorted.to_csv(output_csv_name, index=False)
+    print(f"Merged data saved to: {output_csv_name}")
+
+    # --- 6. Visualization ---
+    plt.style.use('seaborn-v0_8-whitegrid')
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # Generate colors for the plot points
+    num_points = len(df)
+    if num_points > 0:
+        if num_points <= 20:
+            colors = sns.color_palette("tab10", 10) + sns.color_palette("Paired", 10)
+            colors = colors[:num_points]
+        else:
+            colors = [(random.random(), random.random(), random.random()) for _ in range(num_points)]
+
+        # Create the scatter plot
+        for i, row in df.iterrows():
+            ax.scatter(
+                row['Frenetix Cost'], row['VLM Cost'], color=colors[i % len(colors)],
+                s=200, alpha=0.8, edgecolors='black'
+            )
+            ax.text(row['Frenetix Cost'] * 1.01, row['VLM Cost'], f"ID: {row['Trajectory ID']}", fontsize=9)
+
+    # Set titles and labels for clarity
+    ax.set_title(f'Frenetix vs. Gemini-1.5-pro (Cost)\nScenario: {base_scenario_name} | Timestep: {timestep}',
+                 fontsize=16, weight='bold')
+    ax.set_xlabel('Frenetix Cost (Lower is better)', fontsize=12)
+    ax.set_ylabel('VLM Cost (Lower is better)', fontsize=12)
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+
+    # Save the figure to a file
+    plt.tight_layout()
+    plt.savefig(output_png_name, dpi=300)
+    plt.close(fig)  # Close the figure to free up memory
+    print(f"Comparison plot saved to: {output_png_name}")
+
+
+# --- Main Execution Block ---
+if __name__ == "__main__":
+    # Define the scenario and the list of timesteps to process
+    base_scenario_name = 'USA_Peach-1_1_T-1'
+    timesteps_to_process = [0, 5, 10, 15, 20, 25, 30, 35,40,45]  # Define your list of timesteps here
+
+    # Loop through each defined timestep and run the analysis
+    for ts in timesteps_to_process:
+        analyze_timestep(base_scenario_name, ts)
+
+    print(f"\n{'=' * 20} Batch analysis complete. {'=' * 20}")
