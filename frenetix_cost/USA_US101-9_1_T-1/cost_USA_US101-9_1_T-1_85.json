@@ -1,0 +1,152 @@
+{
+    "trajectory_id:708": {
+        "cost": 1320.3,
+        "costMap": {
+            "lateral_jerk": [
+                0.26,
+                0.05
+            ],
+            "prediction": [
+                6245.46,
+                1249.09
+            ],
+            "longitudinal_jerk": [
+                0.08,
+                0.02
+            ],
+            "distance_to_reference_path": [
+                8.33,
+                41.65
+            ],
+            "velocity_offset": [
+                29.48,
+                29.48
+            ]
+        }
+    },
+    "trajectory_id:709": {
+        "cost": 1912.98,
+        "costMap": {
+            "lateral_jerk": [
+                0.21,
+                0.04
+            ],
+            "prediction": [
+                9265.58,
+                1853.12
+            ],
+            "longitudinal_jerk": [
+                0.08,
+                0.02
+            ],
+            "distance_to_reference_path": [
+                5.82,
+                29.11
+            ],
+            "velocity_offset": [
+                30.69,
+                30.69
+            ]
+        }
+    },
+    "trajectory_id:600": {
+        "cost": 2330.14,
+        "costMap": {
+            "lateral_jerk": [
+                0.74,
+                0.15
+            ],
+            "prediction": [
+                11409.9,
+                2281.98
+            ],
+            "longitudinal_jerk": [
+                0.07,
+                0.01
+            ],
+            "distance_to_reference_path": [
+                3.28,
+                16.42
+            ],
+            "velocity_offset": [
+                31.58,
+                31.58
+            ]
+        }
+    },
+    "trajectory_id:171": {
+        "cost": 68.15,
+        "costMap": {
+            "lateral_jerk": [
+                15.86,
+                3.17
+            ],
+            "prediction": [
+                262.98,
+                52.6
+            ],
+            "longitudinal_jerk": [
+                9.1,
+                1.82
+            ],
+            "distance_to_reference_path": [
+                0.0,
+                0.0
+            ],
+            "velocity_offset": [
+                10.56,
+                10.56
+            ]
+        }
+    },
+    "trajectory_id:117": {
+        "cost": 1451.05,
+        "costMap": {
+            "lateral_jerk": [
+                16.54,
+                3.31
+            ],
+            "prediction": [
+                6833.35,
+                1366.67
+            ],
+            "longitudinal_jerk": [
+                0.25,
+                0.05
+            ],
+            "distance_to_reference_path": [
+                11.62,
+                58.09
+            ],
+            "velocity_offset": [
+                22.93,
+                22.93
+            ]
+        }
+    },
+    "trajectory_id:491": {
+        "cost": 3144.67,
+        "costMap": {
+            "lateral_jerk": [
+                8.39,
+                1.68
+            ],
+            "prediction": [
+                15524.51,
+                3104.9
+            ],
+            "longitudinal_jerk": [
+                1.52,
+                0.3
+            ],
+            "distance_to_reference_path": [
+                0.02,
+                0.09
+            ],
+            "velocity_offset": [
+                37.69,
+                37.69
+            ]
+        }
+    }
+}

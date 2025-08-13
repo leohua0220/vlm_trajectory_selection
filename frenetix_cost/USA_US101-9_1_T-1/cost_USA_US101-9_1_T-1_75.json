@@ -1,0 +1,102 @@
+{
+    "trajectory_id:1638": {
+        "cost": 1231.67,
+        "costMap": {
+            "lateral_jerk": [
+                7.15,
+                1.43
+            ],
+            "prediction": [
+                5830.98,
+                1166.2
+            ],
+            "longitudinal_jerk": [
+                3.65,
+                0.73
+            ],
+            "distance_to_reference_path": [
+                7.62,
+                38.12
+            ],
+            "velocity_offset": [
+                25.19,
+                25.19
+            ]
+        }
+    },
+    "trajectory_id:26646": {
+        "cost": 1760.93,
+        "costMap": {
+            "lateral_jerk": [
+                0.47,
+                0.09
+            ],
+            "prediction": [
+                8448.29,
+                1689.66
+            ],
+            "longitudinal_jerk": [
+                0.25,
+                0.05
+            ],
+            "distance_to_reference_path": [
+                5.45,
+                27.23
+            ],
+            "velocity_offset": [
+                43.89,
+                43.89
+            ]
+        }
+    },
+    "trajectory_id:2452": {
+        "cost": 77.82,
+        "costMap": {
+            "lateral_jerk": [
+                14.1,
+                2.82
+            ],
+            "prediction": [
+                307.13,
+                61.43
+            ],
+            "longitudinal_jerk": [
+                11.54,
+                2.31
+            ],
+            "distance_to_reference_path": [
+                0.0,
+                0.0
+            ],
+            "velocity_offset": [
+                11.26,
+                11.26
+            ]
+        }
+    },
+    "trajectory_id:31381": {
+        "cost": 1396.62,
+        "costMap": {
+            "lateral_jerk": [
+                10.17,
+                2.03
+            ],
+            "prediction": [
+                6558.73,
+                1311.75
+            ],
+            "longitudinal_jerk": [
+                1.76,
+                0.35
+            ],
+            "distance_to_reference_path": [
+                9.43,
+                47.14
+            ],
+            "velocity_offset": [
+                35.35,
+                35.35
+            ]
+        }
+    }
+}

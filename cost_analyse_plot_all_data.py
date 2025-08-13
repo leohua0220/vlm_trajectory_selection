@@ -51,6 +51,7 @@ def plot_cost_comparison_with_highlights(directory_path, base_scenario_name,
     all_points_df[['Frenetix Cost Norm', 'VLM Cost Norm']] = scaler.fit_transform(
         all_points_df[['Frenetix Cost', 'VLM Cost']]
     )
+    print(f"number of data points loaded: {len(all_points_df)}")
 
     # --- 1. Identify Best Trajectories (using original costs) ---
     # The minimum of the normalized value is the same as the minimum of the original value,
@@ -113,7 +114,7 @@ def plot_cost_comparison_with_highlights(directory_path, base_scenario_name,
                      ha='left',
                      va='center', fontweight='bold', zorder=1)
 
-    plt.title('Normalized Cost Comparison: Frenetix vs. GEMINI-2.5-pro (with DSPY)', fontsize=16, weight='bold')
+    plt.title(f'Normalized Cost Comparison: Frenetix vs. GEMINI-2.5-pro ({prompt_type}) {base_scenario_name}', fontsize=16, weight='bold')
     plt.xlabel('Frenetix Cost', fontsize=12)
     plt.ylabel('GEMINI Cost', fontsize=12)
     plt.legend(title='Legend')
@@ -127,10 +128,7 @@ def plot_cost_comparison_with_highlights(directory_path, base_scenario_name,
     plt.plot([0, 1], [0, 1], 'r--', linewidth=1.5, label='y=x (Equal Cost)')
 
     plt.tight_layout()
-    output_filename = f"{directory_path}/cost_{base_scenario_name}_all_normalized_dspy.png"
-    output_dir = os.path.dirname(output_filename)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+
     plt.savefig(output_filename, dpi=300)
     plt.show()
 
@@ -139,15 +137,17 @@ def plot_cost_comparison_with_highlights(directory_path, base_scenario_name,
 if __name__ == '__main__':
     base_scenario_name = 'USA_Peach-1_1_T-1'
     data_directory = f'cost_comparison/{base_scenario_name}'
+    prompt_type = 'wo_dspy'
     if not os.path.exists(data_directory):
         os.makedirs(data_directory)
+    output_filename = f"{data_directory}/cost_{base_scenario_name}_all_normalized_{prompt_type}.png"
 
     # Ensure the directory exists before running
     if os.path.exists(data_directory):
         plot_cost_comparison_with_highlights(
             data_directory,
             base_scenario_name,
-            file_pattern=f'dspy_{base_scenario_name}_*.csv'
+            file_pattern=f'{prompt_type}_{base_scenario_name}_*.csv'
         )
     else:
         print(f"Error: Data directory not found at '{data_directory}'")

@@ -1,0 +1,102 @@
+{
+    "trajectory_id:751": {
+        "cost": 3.44,
+        "costMap": {
+            "lateral_jerk": [
+                0.0,
+                0.0
+            ],
+            "prediction": [
+                0.0,
+                0.0
+            ],
+            "longitudinal_jerk": [
+                0.11,
+                0.02
+            ],
+            "distance_to_reference_path": [
+                0.0,
+                0.02
+            ],
+            "velocity_offset": [
+                3.4,
+                3.4
+            ]
+        }
+    },
+    "trajectory_id:500": {
+        "cost": 56.13,
+        "costMap": {
+            "lateral_jerk": [
+                0.72,
+                0.14
+            ],
+            "prediction": [
+                0.0,
+                0.0
+            ],
+            "longitudinal_jerk": [
+                3.09,
+                0.62
+            ],
+            "distance_to_reference_path": [
+                2.73,
+                13.63
+            ],
+            "velocity_offset": [
+                41.74,
+                41.74
+            ]
+        }
+    },
+    "trajectory_id:591": {
+        "cost": 52.03,
+        "costMap": {
+            "lateral_jerk": [
+                0.0,
+                0.0
+            ],
+            "prediction": [
+                0.0,
+                0.0
+            ],
+            "longitudinal_jerk": [
+                3.77,
+                0.75
+            ],
+            "distance_to_reference_path": [
+                0.0,
+                0.01
+            ],
+            "velocity_offset": [
+                51.27,
+                51.27
+            ]
+        }
+    },
+    "trajectory_id:127": {
+        "cost": 95.76,
+        "costMap": {
+            "lateral_jerk": [
+                32.34,
+                6.47
+            ],
+            "prediction": [
+                0.0,
+                0.0
+            ],
+            "longitudinal_jerk": [
+                9.5,
+                1.9
+            ],
+            "distance_to_reference_path": [
+                11.62,
+                58.09
+            ],
+            "velocity_offset": [
+                29.29,
+                29.29
+            ]
+        }
+    }
+}

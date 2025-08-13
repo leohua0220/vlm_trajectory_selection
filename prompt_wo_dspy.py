@@ -128,7 +128,7 @@ This cost is determined by speed regulation.
     genai.configure(api_key=api_key)
 
     # Use a model that supports multi-modal (text + image) inputs.
-    model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest")
+    model = genai.GenerativeModel(model_name="gemini-2.5-pro")
 
     generation_config = genai.types.GenerationConfig(
         response_mime_type="application/json"
@@ -162,10 +162,10 @@ This cost is determined by speed regulation.
 # --- Main Execution Block ---
 if __name__ == "__main__":
     # Define the base scenario name
-    base_scenario_name = "USA_Peach-1_1_T-1"
+    base_scenario_name = "USA_US101-29_1_T-1"
 
     # Define the list of timesteps to process
-    timesteps = [0, 5, 10, 15, 20, 25, 30]
+    timesteps = [i for i in range(0,50,5)]
 
     print(f"--- Starting Batch Evaluation for Scenario: {base_scenario_name} ---")
 
@@ -212,7 +212,7 @@ if __name__ == "__main__":
             os.makedirs(output_dir, exist_ok=True)
 
             # Create a unique filename for the current timestep's result
-            output_filename = f"response_wo_dspy_{base_scenario_name}_{timestep}.json"
+            output_filename = f"wo_dspy_{base_scenario_name}_{timestep}.json"
             output_filepath = os.path.join(output_dir, output_filename)
 
             print(f"\n--- Saving response to {output_filepath} ---")

@@ -7,7 +7,7 @@ import numpy as np
 import random
 
 
-def analyze_timestep(base_scenario_name: str, timestep: int):
+def analyze_timestep(base_scenario_name: str, timestep: int, prompt_type: str):
     """
     Analyzes and visualizes cost data for a single scenario timestep.
 
@@ -18,13 +18,13 @@ def analyze_timestep(base_scenario_name: str, timestep: int):
 
     # --- 1. Define file paths for the current timestep ---
     file_name_cost = f'frenetix_cost/{base_scenario_name}/cost_{base_scenario_name}_{timestep}.json'
-    file_name_responses = f'logs/responses/{base_scenario_name}/dspy_{base_scenario_name}_{timestep}.json'
+    file_name_responses = f'logs/responses/{base_scenario_name}/{prompt_type}_{base_scenario_name}_{timestep}.json'
 
     # Define output paths
     output_dir = f'cost_comparison/{base_scenario_name}'
     os.makedirs(output_dir, exist_ok=True)  # Ensure the output directory exists
-    output_csv_name = f'{output_dir}/dspy_{base_scenario_name}_{timestep}.csv'
-    output_png_name = f'{output_dir}/dspy_{base_scenario_name}_{timestep}.png'
+    output_csv_name = f'{output_dir}/{prompt_type}_{base_scenario_name}_{timestep}.csv'
+    output_png_name = f'{output_dir}/{prompt_type}_{base_scenario_name}_{timestep}.png'
 
     # --- 2. Load the JSON files ---
     try:
@@ -39,46 +39,48 @@ def analyze_timestep(base_scenario_name: str, timestep: int):
 
     # --- 3. Extract and merge the data ---
     merged_data = []
-    for traj_key, evaluation in evaluation_data.items():
-        if not traj_key.startswith("trajectory_id:"):
-            continue
+    if prompt_type == 'dspy':
+        for traj_key, evaluation in evaluation_data.items():
+            if not traj_key.startswith("trajectory_id:"):
+                continue
 
-        if traj_key in cost_data:
-            try:
-                traj_id = int(traj_key.split(':')[1])
+            if traj_key in cost_data:
+                try:
+                    traj_id = int(traj_key.split(':')[1])
+                    algo_cost = cost_data[traj_key]['cost']
+                    vlm_cost = evaluation['cost']
+                    vlm_cost_breakdown = evaluation['costMap']
+
+                    merged_data.append({
+                        'Trajectory ID': traj_id,
+                        'Frenetix Cost': algo_cost,
+                        'VLM Cost': vlm_cost,
+                        'Lateral Jerk': vlm_cost_breakdown.get('lateral_jerk', [0, 0])[0],
+                        'Longitudinal Jerk': vlm_cost_breakdown.get('longitudinal_jerk', [0, 0])[0],
+                        'Velocity Offset': vlm_cost_breakdown.get('velocity_offset', [0, 0])[0],
+                    })
+                except (ValueError, IndexError, KeyError) as e:
+                    print(f"Skipping key '{traj_key}' in timestep {timestep} due to parsing error: {e}")
+    if prompt_type == 'wo_dspy':
+        for evaluation in evaluation_data['evaluation']:
+            traj_id = evaluation['trajectory_id']
+            # Construct the key to look up the cost in the other file.
+            traj_key = f"trajectory_id:{traj_id}"
+
+            # Check if the trajectory exists in the cost data file.
+            if traj_key in cost_data:
+                # Get the Frenetix Cost.
                 algo_cost = cost_data[traj_key]['cost']
-                vlm_cost = evaluation['cost']
-                vlm_cost_breakdown = evaluation['costMap']
-
+                # Append all relevant information into a dictionary.
                 merged_data.append({
                     'Trajectory ID': traj_id,
                     'Frenetix Cost': algo_cost,
-                    'VLM Cost': vlm_cost,
-                    'Lateral Jerk': vlm_cost_breakdown.get('lateral_jerk', [0, 0])[0],
-                    'Longitudinal Jerk': vlm_cost_breakdown.get('longitudinal_jerk', [0, 0])[0],
-                    'Velocity Offset': vlm_cost_breakdown.get('velocity_offset', [0, 0])[0],
+                    'VLM Cost': evaluation['total_cost'],
+                    'Safety Score': evaluation['cost_breakdown']['safety'],
+                    'Comfort Score': evaluation['cost_breakdown']['comfort'],
+                    'Efficiency Score': evaluation['cost_breakdown']['efficiency'],
+                    # 'Reasons': evaluation['cost_breakdown']['reasons']
                 })
-            except (ValueError, IndexError, KeyError) as e:
-                print(f"Skipping key '{traj_key}' in timestep {timestep} due to parsing error: {e}")
-    # for evaluation in evaluation_data['evaluation']:
-    #     traj_id = evaluation['trajectory_id']
-    #     # Construct the key to look up the cost in the other file.
-    #     traj_key = f"trajectory_id:{traj_id}"
-    #
-    #     # Check if the trajectory exists in the cost data file.
-    #     if traj_key in cost_data:
-    #         # Get the Frenetix Cost.
-    #         algo_cost = cost_data[traj_key]['cost']
-    #         # Append all relevant information into a dictionary.
-    #         merged_data.append({
-    #             'Trajectory ID': traj_id,
-    #             'Frenetix Cost': algo_cost,
-    #             'VLM Cost': evaluation['total_cost'],
-    #             'Safety Score': evaluation['cost_breakdown']['safety'],
-    #             'Comfort Score': evaluation['cost_breakdown']['comfort'],
-    #             'Efficiency Score': evaluation['cost_breakdown']['efficiency'],
-    #             'Reasons': evaluation['cost_breakdown']['reasons']
-    #         })
 
     # --- 4. Create DataFrame and calculate ranks ---
     if not merged_data:
@@ -132,11 +134,11 @@ def analyze_timestep(base_scenario_name: str, timestep: int):
 # --- Main Execution Block ---
 if __name__ == "__main__":
     # Define the scenario and the list of timesteps to process
-    base_scenario_name = 'USA_Peach-1_1_T-1'
-    timesteps_to_process = [0, 5, 10, 15, 20, 25, 30, 35,40,45]  # Define your list of timesteps here
-
+    base_scenario_name = 'USA_US101-29_1_T-1'
+    timesteps_to_process = [i for i in range(0,115,5)]  # Define your list of timesteps here
+    prompt_type = 'wo_dspy'  # Define the prompt type, e.g., 'wo_dspy', 'dspy'
     # Loop through each defined timestep and run the analysis
     for ts in timesteps_to_process:
-        analyze_timestep(base_scenario_name, ts)
+        analyze_timestep(base_scenario_name, ts, prompt_type)
 
     print(f"\n{'=' * 20} Batch analysis complete. {'=' * 20}")

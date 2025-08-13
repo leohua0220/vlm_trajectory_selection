@@ -28,7 +28,9 @@ def evaluate_scenario_from_single_prompt(prompt_data: dict, scenario_data: dict,
         raise ValueError("GEMINI_API_KEY environment variable not set.")
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest")
+    model_name = "gemini-2.5-pro"
+    model = genai.GenerativeModel(model_name=model_name)
+    print(f"Evaluating {model_name}...")
     generation_config = genai.types.GenerationConfig(
         response_mime_type="application/json"
     )
@@ -113,9 +115,8 @@ def process_single_timestep(base_scenario_name: str, time_step: int, prompt_data
 # --- Main Execution Block ---
 if __name__ == "__main__":
     # Define the base scenario and the list of timesteps to process
-    base_scenario_name = "USA_Peach-1_1_T-1"
-    time_steps = [15]  # Define your list of timesteps here
-
+    base_scenario_name = "USA_US101-29_1_T-1"
+    time_steps = [i for i in range(0, 115, 5)]  # Example: [0, 5, 10, ..., 110]
     prompt_data_path = 'best_motion_evaluator_prompt.json'
 
     # Load the main prompt data once, as it's the same for all timesteps

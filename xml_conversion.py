@@ -81,6 +81,15 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
                 scenario_dict["goal_region"] = {"center_xy": [round(float(center_x), 3), round(float(center_y), 3)]}
             else:
                 scenario_dict["goal_region"] = {"center_xy": [0.0, 0.0]}
+            velocity_start = goal_state.findtext('velocity/intervalStart')
+            velocity_end = goal_state.findtext('velocity/intervalEnd')
+            if velocity_start and velocity_end:
+                scenario_dict["goal_region"]["velocity_interval"] = [
+                    round(float(velocity_start), 3),
+                    round(float(velocity_end), 3)
+                ]
+            else:
+                scenario_dict["goal_region"]["velocity_interval"] = [0.0, 0.0]
 
     # Dynamic obstacle parsing remains the same
     for obstacle_node in root.findall('dynamicObstacle'):
@@ -161,7 +170,7 @@ def convert_xml_to_scenario_dict(xml_string: str, current_timestep, dt) -> dict:
 if __name__ == "__main__":
 
     # --- Configuration ---
-    base_scenario_name = os.path.splitext(os.path.basename("USA_US101-29_1_T-1.xml"))[0]
+    base_scenario_name = os.path.splitext(os.path.basename("USA_US101-9_1_T-1.xml"))[0]
     input_xml_filename = f"cr_scenarios/{base_scenario_name}/{base_scenario_name}.xml"
     input_csv_filename = f"cr_scenarios/{base_scenario_name}/logs.csv"
     start_timestep = 0
